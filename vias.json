@@ -1,0 +1,61 @@
+{
+    "vias": {
+        "v": [
+            {
+                "id": 1,
+                "grade": "V+",
+                "value": "015-035-165-146-142",
+                "name": "Danona",
+                "description": "Errez bat danontzako"
+            }
+        ],
+        "vi": [
+            {
+                "id": 2,
+                "grade": "6a",
+                "value": "015-035-165-146-142",
+                "name": "Danona",
+                "description": "Errez bat danontzako"
+            },
+            {
+                "id": 3,
+                "grade": "6b",
+                "value": "025-065-165-156-142",
+                "name": "Danona",
+                "description": "Errez bat danontzako"
+            }
+        ],
+        "vii": [
+            {
+                "id": 4,
+                "grade": "7a",
+                "value": "015-035-165-146-142",
+                "name": "Danona",
+                "description": "Errez bat danontzako"
+            },
+            {
+                "id": 5,
+                "grade": "7c",
+                "value": "025-065-165-156-142",
+                "name": "Danona",
+                "description": "Errez bat danontzako"
+            }
+        ],
+        "viii": [
+            {
+                "id": 6,
+                "grade": "8b+",
+                "value": "015-035-165-146-142",
+                "name": "Danona",
+                "description": "Errez bat danontzako"
+            },
+            {
+                "id": 7,
+                "grade": "8a+",
+                "value": "025-065-165-156-142",
+                "name": "Danona",
+                "description": "Errez bat danontzako"
+            }
+        ]
+    }
+}
