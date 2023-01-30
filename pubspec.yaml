@@ -1,4 +1,4 @@
-name: Hellboard
+name: hellboard
 description: Moon board of the hell
 
 publish_to: 'none'
@@ -23,3 +23,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/vias.json
