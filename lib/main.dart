@@ -1,7 +1,7 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'dart:typed_data';
  
 void main() {
   runApp(const MyApp());
@@ -64,17 +64,31 @@ class MyHomePage extends StatelessWidget {
           subtitle: Text(via['owner']),
           trailing: Icon(Icons.info),
           onTap: () {
-            StreamSubscription<BluetoothDiscoveryResult>? conn;
+            /*StreamSubscription<BluetoothDiscoveryResult>? conn;
             
             conn = FlutterBluetoothSerial.instance.startDiscovery().listen((r) {
+              print(r.device);
               print(r.device.name);
-            });
-            print(conn);
+              print(r.device.address);
+            });*/
+
+            String pitch = via["value"];
+            print('load:$pitch');
+            connectToDevice('load:$via["value"]');
+            
           }
         )
       )
     );
     return items;
+  }
+
+  void connectToDevice(via) async {
+    Uint8List uint8list = Uint8List.fromList(via.codeUnits);
+
+    BluetoothConnection connection = await BluetoothConnection.toAddress("C8:F0:9E:75:16:42");
+    print(connection.isConnected);
+    connection.output.add(uint8list);
   }
  
   @override
