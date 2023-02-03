@@ -60,13 +60,6 @@ class MyHomePage extends StatelessWidget {
   final Map? oVias;
   MyHomePage({required this.connection, required this.oVias});
 
-  Map _getVias() {
-    //File vias = File('assets/vias.json');
-    //Map<String, dynamic> oVias = jsonDecode(vias.readAsStringSync());
-    Map<String, dynamic> oVias = jsonDecode('{    "vias": {        "v": [            {                "id": 1,                "grade": "V+",                "value": "015-035-165-146-142",                "name": "Danona",                "description": "Errez bat danontzako",                "owner": "Erik"            },            {                "id": 1,                "grade": "V",                "value": "015-135-165-126-144",                "name": "Hasi berriak",                "description": "Hasi berriak",                "owner": "Josu"            }        ],        "vi": [            {                "id": 2,                "grade": "6a",                "value": "015-035-165-146-142",                "name": "Danona",                "description": "Errez bat danontzako",                "owner": "Joseba"            },            {                "id": 3,                "grade": "6b",                "value": "025-065-165-156-142",                "name": "Danona",                "description": "Errez bat danontzako",                "owner": "Gotzon"            }        ],        "vii": [            {                "id": 4,                "grade": "7a",                "value": "015-035-165-146-142",                "name": "Danona",                "description": "Errez bat danontzako",                "owner": "Unai"            },            {                "id": 5,                "grade": "7c",                "value": "025-065-165-156-142",                "name": "Danona",                "description": "Errez bat danontzako",                "owner": "Asier"            }        ],        "viii": [            {                "id": 6,                "grade": "8b+",                "value": "015-035-165-146-142",                "name": "Danona",                "description": "Errez bat danontzako",                "owner": "Eneko"            },            {                "id": 7,                "grade": "8a+",                "value": "025-065-165-156-142",                "name": "Danona",                "description": "Errez bat danontzako",                "owner": "Gaizka"            }        ]    }}');
-    return oVias;
-  }
-
   _getDetail(o) {
     List<Widget> items = [];
     const colors = {
@@ -100,14 +93,6 @@ class MyHomePage extends StatelessWidget {
           subtitle: Text(via['owner']),
           trailing: Icon(Icons.info),
           onTap: () {
-            /*StreamSubscription<BluetoothDiscoveryResult>? conn;
-            
-            conn = FlutterBluetoothSerial.instance.startDiscovery().listen((r) {
-              print(r.device);
-              print(r.device.name);
-              print(r.device.address);
-            });*/
-
             String viavalue = via["value"];
             String pitch = 'load:$viavalue';
             
@@ -123,7 +108,6 @@ class MyHomePage extends StatelessWidget {
  
   @override
   Widget build(BuildContext context) {
-    //var oVias = oVias?;
 
     return Scaffold(
       appBar: AppBar(
