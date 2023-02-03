@@ -2,27 +2,51 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'dart:typed_data';
+import 'dart:async';
  
 void main() {
   runApp(const MyApp());
 }
- class MyApp extends StatelessWidget {
+
+Future<BluetoothConnection> connectToDevice() async {
+  BluetoothConnection connection = await BluetoothConnection.toAddress("C8:F0:9E:75:16:42");
+  return connection;
+}
+
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
  
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Hellboard APP',
-      theme: ThemeData(
-        primarySwatch: Colors.lightGreen,
-      ),
-      home: const MyHomePage(),
+    return FutureBuilder<BluetoothConnection>(
+      future: connectToDevice(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          print('--------------');
+          print(snapshot.data);
+          print('--------------');
+          
+          return MaterialApp(
+            title: 'Hellboard APP',
+            theme: ThemeData(
+              primarySwatch: Colors.lightGreen,
+            ),
+            home: MyHomePage(connection: snapshot.data),
+          );
+        } else if (snapshot.hasError) {
+          print('-------ERROR-------');
+          return Text('Error: ${snapshot.error}');
+        }
+        return CircularProgressIndicator();
+      },
     );
   }
 }
+
  
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  final BluetoothConnection? connection;
+  MyHomePage({required this.connection});
 
   Map _getVias() {
     //File vias = File('assets/vias.json');
@@ -72,23 +96,17 @@ class MyHomePage extends StatelessWidget {
               print(r.device.address);
             });*/
 
-            String pitch = via["value"];
-            print('load:$pitch');
-            connectToDevice('load:$via["value"]');
+            String viavalue = via["value"];
+            String pitch = 'load:$viavalue';
+            
+            Uint8List uint8list = Uint8List.fromList(pitch.codeUnits);
+            connection?.output.add(uint8list);
             
           }
         )
       )
     );
     return items;
-  }
-
-  void connectToDevice(via) async {
-    Uint8List uint8list = Uint8List.fromList(via.codeUnits);
-
-    BluetoothConnection connection = await BluetoothConnection.toAddress("C8:F0:9E:75:16:42");
-    print(connection.isConnected);
-    connection.output.add(uint8list);
   }
  
   @override
