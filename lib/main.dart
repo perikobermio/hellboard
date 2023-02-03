@@ -3,14 +3,25 @@ import 'dart:convert';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'dart:typed_data';
 import 'dart:async';
+import 'package:flutter/services.dart' show rootBundle;
+
+const btAddress = 'C8:F0:9E:75:16:42';
+const viasFile  = 'assets/vias.json';
  
 void main() {
   runApp(const MyApp());
 }
 
-Future<BluetoothConnection> connectToDevice() async {
-  BluetoothConnection connection = await BluetoothConnection.toAddress("C8:F0:9E:75:16:42");
-  return connection;
+Future<Map<String, dynamic>> preLoad() async {
+  BluetoothConnection connection = await BluetoothConnection.toAddress(btAddress);
+
+  var promiseVias = await rootBundle.loadString(viasFile);
+  Map<String, dynamic> oVias = jsonDecode(promiseVias);
+
+  return {
+    'connection': connection,
+    'vias': oVias
+  };
 }
 
 class MyApp extends StatelessWidget {
@@ -18,23 +29,23 @@ class MyApp extends StatelessWidget {
  
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<BluetoothConnection>(
-      future: connectToDevice(),
+    return FutureBuilder<Map<String, dynamic>>(
+      future: preLoad(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          print('--------------');
-          print(snapshot.data);
-          print('--------------');
-          
+
           return MaterialApp(
             title: 'Hellboard APP',
             theme: ThemeData(
               primarySwatch: Colors.lightGreen,
             ),
-            home: MyHomePage(connection: snapshot.data),
+            home: MyHomePage(
+              connection: snapshot.data?['connection'], 
+              oVias: snapshot.data?['vias']
+            )
           );
+
         } else if (snapshot.hasError) {
-          print('-------ERROR-------');
           return Text('Error: ${snapshot.error}');
         }
         return CircularProgressIndicator();
@@ -46,7 +57,8 @@ class MyApp extends StatelessWidget {
  
 class MyHomePage extends StatelessWidget {
   final BluetoothConnection? connection;
-  MyHomePage({required this.connection});
+  final Map? oVias;
+  MyHomePage({required this.connection, required this.oVias});
 
   Map _getVias() {
     //File vias = File('assets/vias.json');
@@ -111,7 +123,7 @@ class MyHomePage extends StatelessWidget {
  
   @override
   Widget build(BuildContext context) {
-    var oVias = _getVias();
+    //var oVias = oVias?;
 
     return Scaffold(
       appBar: AppBar(
@@ -123,19 +135,19 @@ class MyHomePage extends StatelessWidget {
             children: <Widget>[
                 ExpansionTile(
                     title: Text("V+ (Sako patatas)"),
-                    children: _getDetail(oVias['vias']['v'])
+                    children: _getDetail(oVias?['vias']['v'])
                 ),
                 ExpansionTile(
                     title: Text("6 gradue (Hasi entrenaten)"),
-                    children: _getDetail(oVias['vias']['vi']),
+                    children: _getDetail(oVias?['vias']['vi']),
                 ),
                 ExpansionTile(
                     title: Text("7 gradue (Mas fuerte que el vinagre)"),
-                    children: _getDetail(oVias['vias']['vii']),
+                    children: _getDetail(oVias?['vias']['vii']),
                 ),
                 ExpansionTile(
                     title: Text("8 (Semidios)"),
-                    children: _getDetail(oVias['vias']['viii']),
+                    children: _getDetail(oVias?['vias']['viii']),
                 ),
                
             ],
