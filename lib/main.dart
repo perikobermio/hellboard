@@ -4,18 +4,21 @@ import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'dart:typed_data';
 import 'dart:async';
 import 'package:http/http.dart' as http;
-
-const btAddress = 'C8:F0:9E:75:16:42';
-const viasFile  = 'https://extraordinary-flan-0cf528.netlify.app/vias.json';
+import 'package:select_form_field/select_form_field.dart';
+//import 'sceneAdd.dart' as sceneAdd;
+import 'config.dart' as config;
  
 void main() {
-  runApp(const MyApp());
+  runApp(const MaterialApp(
+    title:  'Navigation Basics',
+    home:   SceneSelect(),
+  ));
 }
 
 Future<Map<String, dynamic>> preLoad() async {
-  BluetoothConnection connection  = await BluetoothConnection.toAddress(btAddress);
+  BluetoothConnection connection  = await BluetoothConnection.toAddress(config.btAddress);
 
-  final httpPackageUrl            = Uri.parse(viasFile);
+  final httpPackageUrl            = Uri.parse(config.viasFile);
   final promiseVias               = await http.read(httpPackageUrl);
   Map<String, dynamic> oVias      = jsonDecode(promiseVias);
 
@@ -25,8 +28,8 @@ Future<Map<String, dynamic>> preLoad() async {
   };
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class SceneSelect extends StatelessWidget {
+  const SceneSelect({Key? key}) : super(key: key);
  
   @override
   Widget build(BuildContext context) {
@@ -40,7 +43,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.lightGreen,
             ),
-            home: MyHomePage(
+            home: SceneSelectHome(
               connection: snapshot.data?['connection'], 
               oVias: snapshot.data?['vias']
             )
@@ -55,11 +58,97 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class SceneAdd extends StatelessWidget {
+  const SceneAdd({Key? key}) : super(key: key);
  
-class MyHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Hellboard geitxu Blokie'),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            child: SelectFormField(
+              type: SelectFormFieldType.dropdown, // or can be dialog
+              initialValue: 'v+',
+              icon: Icon(Icons.grade),
+              labelText: 'Gradue',
+              items: config.grades,
+              onChanged: (val) => print(val),
+              onSaved: (val) => print(val),
+            )
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Blokie',
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Izena',
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Deskribapena',
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            child: SelectFormField(
+              type: SelectFormFieldType.dropdown, // or can be dialog
+              initialValue: '-',
+              icon: Icon(Icons.person),
+              labelText: 'Egilea',
+              items: config.users,
+              onChanged: (val) => print(val),
+              onSaved: (val) => print(val),
+            )
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            child: TextButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(120, 68),
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(2)),
+                ),
+              ),
+              onPressed: () { },
+              child: Text('Gorde'),
+            )
+
+          ),
+
+
+        ],
+      )
+    );
+  }
+}
+
+ 
+class SceneSelectHome extends StatelessWidget {
   final BluetoothConnection? connection;
   final Map? oVias;
-  MyHomePage({required this.connection, required this.oVias});
+  SceneSelectHome({required this.connection, required this.oVias});
 
   _getDetail(o) {
     List<Widget> items = [];
@@ -113,6 +202,23 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Hellboard'),
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SceneAdd()),
+                );
+              },
+              child: Icon(
+                Icons.add,
+                size: 26.0,
+              ),
+            )
+          ),
+        ]
       ),
       body: Container(
           color: Colors.white,
