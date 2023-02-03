@@ -3,24 +3,25 @@ import 'dart:convert';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'dart:typed_data';
 import 'dart:async';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:http/http.dart' as http;
 
 const btAddress = 'C8:F0:9E:75:16:42';
-const viasFile  = 'assets/vias.json';
+const viasFile  = 'https://extraordinary-flan-0cf528.netlify.app/vias.json';
  
 void main() {
   runApp(const MyApp());
 }
 
 Future<Map<String, dynamic>> preLoad() async {
-  BluetoothConnection connection = await BluetoothConnection.toAddress(btAddress);
+  BluetoothConnection connection  = await BluetoothConnection.toAddress(btAddress);
 
-  var promiseVias = await rootBundle.loadString(viasFile);
-  Map<String, dynamic> oVias = jsonDecode(promiseVias);
+  final httpPackageUrl            = Uri.parse(viasFile);
+  final promiseVias               = await http.read(httpPackageUrl);
+  Map<String, dynamic> oVias      = jsonDecode(promiseVias);
 
   return {
     'connection': connection,
-    'vias': oVias
+    'vias':       oVias
   };
 }
 
