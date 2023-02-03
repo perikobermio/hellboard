@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
-import 'sceneSelect.dart' as sceneselect;
+import 'scene_select.dart' as sceneselect;
 import 'config.dart' as config;
  
 void main() {
   runApp(const MaterialApp(
     title:  'Navigation Basics',
-    home:   SceneSelect(),
+    home:   SceneInit(),
   ));
 }
 
@@ -26,8 +26,8 @@ Future<Map<String, dynamic>> preLoad() async {
   };
 }
 
-class SceneSelect extends StatelessWidget {
-  const SceneSelect({Key? key}) : super(key: key);
+class SceneInit extends StatelessWidget {
+  const SceneInit({Key? key}) : super(key: key);
  
   @override
   Widget build(BuildContext context) {

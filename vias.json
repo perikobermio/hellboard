@@ -4,7 +4,7 @@
             {
                 "id": 1,
                 "grade": "V+",
-                "value": "015-035-165-146-142",
+                "value": "015-035-165-146-142-266-347",
                 "name": "Danona",
                 "description": "Errez bat danontzako",
                 "owner": "Erik"
@@ -12,7 +12,7 @@
             {
                 "id": 1,
                 "grade": "V",
-                "value": "015-135-165-126-144",
+                "value": "015-135-165-226-244-357",
                 "name": "Hasi berriak",
                 "description": "Hasi berriak",
                 "owner": "Josu"
@@ -22,7 +22,7 @@
             {
                 "id": 2,
                 "grade": "6a",
-                "value": "015-035-165-146-142",
+                "value": "015-035-165-346-242",
                 "name": "Danona",
                 "description": "Errez bat danontzako",
                 "owner": "Joseba"
@@ -30,7 +30,7 @@
             {
                 "id": 3,
                 "grade": "6b",
-                "value": "025-065-165-156-142",
+                "value": "025-065-165-356-342",
                 "name": "Danona",
                 "description": "Errez bat danontzako",
                 "owner": "Gotzon"

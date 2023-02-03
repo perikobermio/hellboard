@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'dart:typed_data';
-import 'sceneAdd.dart' as sceneadd;
+import 'scene_add.dart' as sceneadd;
 
 class SceneSelectHome extends StatelessWidget {
   final BluetoothConnection? connection;
