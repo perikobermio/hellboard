@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:select_form_field/select_form_field.dart';
+import 'dart:core';
 import 'config.dart' as config;
+
 
 class SceneAdd extends StatelessWidget {
   const SceneAdd({Key? key}) : super(key: key);
  
   @override
   Widget build(BuildContext context) {
+    TextEditingController? cgrade;
+    TextEditingController? cowner;
+    final cbloc = TextEditingController();
+    final cname = TextEditingController();
+    final cdesc = TextEditingController();
+
+    Map<String, String> newBloc = { 'id': '', 'grade': '','owner': '','value': '','name': '','description': ''};
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Hellboard geitxu Blokie'),
@@ -17,18 +27,20 @@ class SceneAdd extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             child: SelectFormField(
+              controller: cgrade,
               type: SelectFormFieldType.dropdown, // or can be dialog
               initialValue: 'v+',
               icon: Icon(Icons.grade),
               labelText: 'Gradue',
               items: config.grades,
-              onChanged: (val) => print(val),
+              onChanged: (val) => newBloc['grade'] = val,
               onSaved: (val) => print(val),
             )
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             child: TextField(
+              controller: cbloc,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Blokie',
@@ -38,6 +50,7 @@ class SceneAdd extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             child: TextField(
+              controller: cname,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Izena',
@@ -47,6 +60,7 @@ class SceneAdd extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             child: TextField(
+              controller: cdesc,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Deskribapena',
@@ -56,12 +70,13 @@ class SceneAdd extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             child: SelectFormField(
+              controller: cowner,
               type: SelectFormFieldType.dropdown, // or can be dialog
               initialValue: '-',
               icon: Icon(Icons.person),
               labelText: 'Egilea',
               items: config.users,
-              onChanged: (val) => print(val),
+              onChanged: (val) => newBloc['owner'] = val,
               onSaved: (val) => print(val),
             )
           ),
@@ -75,7 +90,14 @@ class SceneAdd extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(2)),
                 ),
               ),
-              onPressed: () { },
+              onPressed: () {
+                newBloc['id']           = DateTime.now().millisecondsSinceEpoch.toString();
+                newBloc['name']         = cname.text;
+                newBloc['description']  = cdesc.text;
+                newBloc['value']        = cbloc.text;
+
+                print(newBloc);
+              },
               child: Text('Gorde'),
             )
 

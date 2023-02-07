@@ -65,7 +65,6 @@ class SceneSelectHome extends StatelessWidget {
               
               Uint8List uint8list = Uint8List.fromList(pitch.codeUnits);
               connection?.output.add(uint8list);
-              
             }
           )
         )
