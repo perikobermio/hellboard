@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "628604627836",
+    "project_id": "hellboard",
+    "storage_bucket": "hellboard.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628604627836:android:f6fd804efd04c9fe3792f9",
+        "android_client_info": {
+          "package_name": "com.example.hellboard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "628604627836-v5310kn4vlju4uuqobnjstsosloghmts.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7U7Kim_yLs9k7sZMk31JxH6NLrnewuOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "628604627836-v5310kn4vlju4uuqobnjstsosloghmts.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

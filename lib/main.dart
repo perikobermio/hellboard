@@ -1,29 +1,43 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'dart:async';
-import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'scene_select.dart' as sceneselect;
 import 'config.dart' as config;
+import 'package:http/http.dart' as http;
+
+import 'package:firebase_core/firebase_core.dart';
+//import 'package:firebase_database/firebase_database.dart';
+import 'firebase_options.dart';
  
 void main() {
   runApp(const MaterialApp(
-    title:  'Navigation Basics',
+    title:  'Hellboard',
     home:   SceneInit(),
   ));
 }
 
 Future<Map<String, dynamic>> preLoad() async {
-  BluetoothConnection connection  = await BluetoothConnection.toAddress(config.btAddress);
+  Map<String, dynamic> ret = {
+    'connection': null,
+    'vias': null,
+  };
+
+  await BluetoothConnection.toAddress(config.btAddress).then((conn) {
+    ret['connection'] = conn;  
+  }).catchError((e) {
+    print('BT conn error');
+  });
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   final httpPackageUrl            = Uri.parse(config.viasFile);
   final promiseVias               = await http.read(httpPackageUrl);
-  Map<String, dynamic> oVias      = jsonDecode(promiseVias);
+  Map<String, dynamic> vias      = jsonDecode(promiseVias);
 
-  return {
-    'connection': connection,
-    'vias':       oVias
-  };
+  ret['vias'] = vias;
+  
+  return ret;
 }
 
 class SceneInit extends StatelessWidget {

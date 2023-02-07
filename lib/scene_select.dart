@@ -5,10 +5,29 @@ import 'scene_add.dart' as sceneadd;
 
 class SceneSelectHome extends StatelessWidget {
   final BluetoothConnection? connection;
-  final Map? oVias;
+  final Map<String, dynamic>? oVias;
   SceneSelectHome({required this.connection, required this.oVias});
 
-  _getDetail(o) {
+  bool isConnected() {
+    return connection != null;
+  }
+
+  _getGrade(vias) {
+    List<Widget> items = [];
+
+    vias.forEach((k, g) => {
+        items.add(
+          ExpansionTile(
+            title: Text(k.toUpperCase()),
+            children: _getDetail(g)
+          )
+        )
+    });
+
+    return items;
+  }
+
+  _getDetail(grade) {
     List<Widget> items = [];
     const colors = {
       'v': Color.fromARGB(255, 135, 135, 135),
@@ -33,24 +52,25 @@ class SceneSelectHome extends StatelessWidget {
       '8c+': Color.fromARGB(255, 0, 0, 0),
     };
 
-    o.forEach((via) => 
-      items.add(
-        ListTile( 
-          leading: Text(via['grade'], style: TextStyle(fontSize: 18, color: colors[via['grade']])),
-          title: Text(via['name']),
-          subtitle: Text(via['owner']),
-          trailing: Icon(Icons.info),
-          onTap: () {
-            String viavalue = via["value"];
-            String pitch = 'load:$viavalue';
-            
-            Uint8List uint8list = Uint8List.fromList(pitch.codeUnits);
-            connection?.output.add(uint8list);
-            
-          }
+    grade.forEach((via) => {
+        items.add(
+          ListTile( 
+            leading: Text(via['grade'], style: TextStyle(fontSize: 18, color: colors[via['grade']])),
+            title: Text(via['name']),
+            subtitle: Text(via['owner']),
+            trailing: Icon(Icons.info),
+            onTap: () {
+              String viavalue = via["value"];
+              String pitch = 'load:$viavalue';
+              
+              Uint8List uint8list = Uint8List.fromList(pitch.codeUnits);
+              connection?.output.add(uint8list);
+              
+            }
+          )
         )
-      )
-    );
+    });
+
     return items;
   }
  
@@ -63,48 +83,36 @@ class SceneSelectHome extends StatelessWidget {
         actions: <Widget>[
           Padding(
             padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              onTap: () {
+            child: IconButton(
+              icon: const Icon(Icons.add),
+              tooltip: 'Bloke barrije',
+              onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const sceneadd.SceneAdd()),
                 );
               },
-              child: Icon(
-                Icons.add,
-                size: 26.0,
-              ),
-            )
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: IconButton(
+              icon: isConnected() ? const Icon(Icons.bluetooth) : const Icon(Icons.bluetooth_disabled),
+              tooltip: 'Konekzinue',
+              onPressed: () {
+                print('BT: trying to connect');
+              },
+            ),
           ),
         ]
       ),
       body: Container(
           color: Colors.white,
           child: ListView(
-            children: <Widget>[
-                ExpansionTile(
-                    title: Text("V+ (Sako patatas)"),
-                    children: _getDetail(oVias?['vias']['v'])
-                ),
-                ExpansionTile(
-                    title: Text("6 gradue (Hasi entrenaten)"),
-                    children: _getDetail(oVias?['vias']['vi']),
-                ),
-                ExpansionTile(
-                    title: Text("7 gradue (Mas fuerte que el vinagre)"),
-                    children: _getDetail(oVias?['vias']['vii']),
-                ),
-                ExpansionTile(
-                    title: Text("8 (Semidios)"),
-                    children: _getDetail(oVias?['vias']['viii']),
-                ),
-               
-            ],
+            children: _getGrade(oVias)
         )
       
       )
     );
   }
-
-
 }
