@@ -88,7 +88,7 @@ class SceneSelectHome extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const sceneadd.SceneAdd()),
+                  MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(oVias: oVias)),
                 );
               },
             ),
