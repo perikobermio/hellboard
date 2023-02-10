@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'dart:typed_data';
 import 'scene_add.dart' as sceneadd;
+import 'globals.dart' as globals;
 
 class SceneSelectHome extends StatelessWidget {
-  final BluetoothConnection? connection;
-  final Map<String, dynamic>? oVias;
-  SceneSelectHome({required this.connection, required this.oVias});
+  SceneSelectHome();
 
   bool isConnected() {
-    return connection != null;
+    return globals.connBT != null;
   }
 
   _getGrade(vias) {
@@ -64,7 +62,7 @@ class SceneSelectHome extends StatelessWidget {
               String pitch = 'load:$viavalue';
               
               Uint8List uint8list = Uint8List.fromList(pitch.codeUnits);
-              connection?.output.add(uint8list);
+              globals.connBT?.output.add(uint8list);
             }
           )
         )
@@ -88,7 +86,7 @@ class SceneSelectHome extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(oVias: oVias)),
+                  MaterialPageRoute(builder: (context) => sceneadd.SceneAdd()),
                 );
               },
             ),
@@ -108,7 +106,7 @@ class SceneSelectHome extends StatelessWidget {
       body: Container(
           color: Colors.white,
           child: ListView(
-            children: _getGrade(oVias)
+            children: _getGrade(globals.vias)
         )
       
       )

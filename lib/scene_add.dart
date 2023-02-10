@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:select_form_field/select_form_field.dart';
 import 'dart:core';
 import 'config.dart' as config;
-
-import 'package:firebase_core/firebase_core.dart';
+import 'globals.dart' as globals;
+import 'main.dart' as sceneinit;
+import 'scene_panel.dart' as scenepanel;
 import 'package:firebase_database/firebase_database.dart';
-import 'firebase_options.dart';
-
 
 class SceneAdd extends StatefulWidget {
-  final Map<String, dynamic>? oVias;
-  SceneAdd({required this.oVias});
+  SceneAdd();
 
   @override
   State<SceneAdd> createState() => _SceneAdd();
@@ -45,6 +43,19 @@ class _SceneAdd extends State<SceneAdd> {
                       items: config.grades,
                       onChanged: (val) => newBloc['grade'] = val
                     )
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    child: IconButton(
+                      icon: const Icon(Icons.sports_score),
+                      tooltip: 'Aukeratu blokie',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => scenepanel.ScenePanel()),
+                        );
+                      },
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -107,11 +118,18 @@ class _SceneAdd extends State<SceneAdd> {
                         newBloc['id'] = DateTime.now().millisecondsSinceEpoch.toString();
 
                         String grade = getGrade(newBloc['grade']);
-                        int key = widget.oVias?[grade].length;
+                        int key = globals.vias[grade].length;
                         final Map<String, Map> updates = {};
+
                         updates[key.toString()] = newBloc;
+
+                        globals.vias[grade].add(newBloc);
                         FirebaseDatabase.instance.ref('/vias/$grade/').update(updates);
-                        
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => sceneinit.SceneInit()),
+                        );
                       },
                       child: Text('Gorde'),
                     )
@@ -138,8 +156,4 @@ String getGrade(String? grade) {
   } else if(nine.contains(grade)) {   ret = 'ix'; }
 
   return ret;
-}
-
-Future<void> setFB() async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
