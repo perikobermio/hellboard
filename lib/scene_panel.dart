@@ -32,11 +32,13 @@ class _ScenePanel extends State<ScenePanel> {
             Offset global = box.localToGlobal(details.localPosition);
             Map coords = getRealCoords(global);
             
-            print(global.dx);
-            print(global.dy);
+            //print(global.dx);
+            //print(global.dy);
 
             setState(() {
               if(coords['x'] != 0) {
+                print(coords['x']);
+                print(coords['y']);
                 _points.add(coords);
               }
             });
@@ -54,6 +56,22 @@ class _ScenePanel extends State<ScenePanel> {
                     shape: BoxShape.rectangle,
                     border: Border.all(
                       color:Color.fromARGB(255, 86, 240, 43),
+                      width: 1.0
+                    ),
+                  ),
+                ),
+                )
+              ),
+              ..._points.map((point) => Positioned(
+                left: 0,
+                top:  0,
+                child: Container(
+                  width: 1,
+                  height: 1,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    border: Border.all(
+                      color:Color.fromARGB(255, 48, 92, 205),
                       width: 1.0
                     ),
                   ),
