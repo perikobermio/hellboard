@@ -6,3 +6,4 @@ Map<String, dynamic> vias = {};
 List<dynamic> panel40     = [];
 List<String> currentBloc  = [];
 BluetoothConnection? connBT;
+String user               = '';

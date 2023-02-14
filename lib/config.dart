@@ -13,7 +13,6 @@ const List<Map<String, dynamic>> grades = [
                 {'value': '10',   'label': '10'}
               ];
 const List<Map<String, dynamic>> users = [
-                {'value': '-',          'label': '-', /*'icon': Icon(Icons.stop)*/},
                 {'value': 'gotzon',     'label': 'Gotzon Unanue'},
                 {'value': 'unai',       'label': 'Unai Urkidi'},
                 {'value': 'josu',       'label': 'Josu Otaola'},

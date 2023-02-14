@@ -60,13 +60,12 @@ class _SceneAdd extends State<SceneAdd> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                     child: TextField(
+                      enabled: false, 
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: 'Blokie',
                       ),
-                      onChanged: (val) {
-                          newBloc['value'] = val;
-                      },
+                      controller: TextEditingController()..text = globals.currentBloc.join('-'),
                     ),
                   ),
                   Padding(
@@ -95,27 +94,11 @@ class _SceneAdd extends State<SceneAdd> {
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: SelectFormField(
-                      type: SelectFormFieldType.dropdown, // or can be dialog
-                      initialValue: '-',
-                      icon: Icon(Icons.person),
-                      labelText: 'Egilea',
-                      items: config.users,
-                      onChanged: (val) => newBloc['owner'] = val
-                    )
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: TextButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(120, 68),
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(2)),
-                        ),
-                      ),
+                    child: OutlinedButton(
                       onPressed: () {
-                        newBloc['id'] = DateTime.now().millisecondsSinceEpoch.toString();
+                        newBloc['id']     = DateTime.now().millisecondsSinceEpoch.toString();
+                        newBloc['value']  = globals.currentBloc.join('-');
+                        newBloc['owner']  = globals.user;
 
                         String grade = getGrade(newBloc['grade']);
                         int key = globals.vias[grade].length;
@@ -131,7 +114,7 @@ class _SceneAdd extends State<SceneAdd> {
                           MaterialPageRoute(builder: (context) => sceneinit.SceneInit()),
                         );
                       },
-                      child: Text('Gorde'),
+                      child: const Text('Gorde'),
                     )
 
                   )

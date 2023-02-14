@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'scene_select.dart' as sceneselect;
+import 'scene_login.dart' as scenelogin;
 import 'config.dart' as config;
 import 'package:http/http.dart' as http;
 import 'globals.dart' as globals;
@@ -66,7 +67,8 @@ class _SceneInit extends State<SceneInit> {
           theme: ThemeData(
             primarySwatch: Colors.lightGreen,
           ),
-          home: sceneselect.SceneSelectHome()
+          //home: sceneselect.SceneSelectHome()
+          home: scenelogin.SceneLogin()
         );
       }
     );

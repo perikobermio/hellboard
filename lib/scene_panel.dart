@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:select_form_field/select_form_field.dart';
 import 'dart:core';
-import 'config.dart' as config;
+import 'scene_add.dart' as sceneadd;
 import 'globals.dart' as globals;
 //import 'scene_add.dart' as scenepanel;
 
@@ -43,7 +42,10 @@ class _ScenePanel extends State<ScenePanel> {
                   globals.currentBloc.add(_points[i]['led']);
               }
 
-              print(globals.currentBloc);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => sceneadd.SceneAdd()),
+              );
             },
             backgroundColor: Color.fromARGB(255, 65, 154, 226),
             heroTag: null,
