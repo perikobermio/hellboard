@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'scene_select.dart' as sceneselect;
 import 'config.dart' as config;
 import 'package:http/http.dart' as http;
@@ -40,6 +41,11 @@ Future<void> preLoad() async {
     final httpPackageUrl            = Uri.parse(config.viasFile);
     final promiseVias               = await http.read(httpPackageUrl);
     globals.vias                    = jsonDecode(promiseVias);
+  }
+
+  if(globals.panel40.isEmpty) {
+    final String response = await rootBundle.loadString('assets/panel40.json');
+    globals.panel40       = jsonDecode(response);
   }
 }
 

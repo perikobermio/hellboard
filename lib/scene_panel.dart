@@ -14,6 +14,7 @@ class ScenePanel extends StatefulWidget {
 
 class _ScenePanel extends State<ScenePanel> {
   final GlobalKey<FormState> formKey = GlobalKey();
+  List<Offset> _points = [];
 
   @override
   Widget build(BuildContext context) {
@@ -21,44 +22,72 @@ class _ScenePanel extends State<ScenePanel> {
       appBar: AppBar(
         title: Text('Hellboard gure panela'),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Stack(
-              children: <Widget>[
-                Image.asset('assets/img/panel40.png'),
-                Positioned(
-                  left: 0,
-                  top: 0,
-                  child: InkWell(
-                    onTap: () {
-                      print('bat');
-                    },
-                    child: Container(
-                      color: Colors.transparent,
-                      width: 100,
-                      height: 100,
+      body: InteractiveViewer(
+        boundaryMargin: const EdgeInsets.all(5.0),
+        minScale: 0.2,
+        maxScale: 4,
+        child: GestureDetector(
+          onTapUp: (TapUpDetails details) {
+            RenderBox box = context.findRenderObject() as RenderBox;
+            Offset global = box.localToGlobal(details.localPosition);
+            Offset coords = getRealCoords(global);
+            
+            print(global.dx);
+            print(global.dy);
+
+            setState(() {
+              _points.add(coords);
+            });
+          },
+          child: Stack(
+            children: [
+              Image.asset('assets/img/panel40.png'),
+              ..._points.map((point) => Positioned(
+                left: point.dx,
+                top: point.dy,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color.fromARGB(255, 86, 240, 43),
+                  ),
+                ),
+                )
+              ),
+              ..._points.map((point) => Positioned(
+                left: 176,
+                top:  29,
+                child: Container(
+                  width: 18,
+                  height: 16,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    border: Border.all(
+                      color:Color.fromARGB(255, 86, 240, 43),
+                      width: 1.0
                     ),
                   ),
                 ),
-                Positioned(
-                  left: 0,
-                  top: 100,
-                  child: InkWell(
-                    onTap: () {
-                      print('bi');
-                    },
-                    child: Container(
-                      color: Colors.transparent,
-                      width: 100,
-                      height: 100,
-                    ),
-                  ),
                 )
-              ]
+              )
+            ]
           )
-        ],
+        ),
       )
     );
   }
+}
+
+Offset getRealCoords(coords) {
+  //Offset nCoords = Offset(0, 0);
+  
+  List<dynamic> a =  globals.panel40.where((i) => 
+    i['x'] < coords.dx && coords.dx < i['x'] + i['w'] && i['y'] < coords.dy && coords.dy < i['y'] + i['h']
+  ).toList();
+
+  print(coords);
+  print(a);
+
+  return coords;
 }

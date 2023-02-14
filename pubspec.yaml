@@ -30,4 +30,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/vias.json
+    - assets/panel40.json
     - assets/img/panel40.png
