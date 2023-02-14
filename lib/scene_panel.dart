@@ -13,14 +13,43 @@ class ScenePanel extends StatefulWidget {
 }
 
 class _ScenePanel extends State<ScenePanel> {
-  final GlobalKey<FormState> formKey = GlobalKey();
-  List<Map> _points = [];
+  List<Map>     _points = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Hellboard gure panela'),
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                _points = [];
+              });
+            },
+            backgroundColor: Color.fromARGB(255, 113, 194, 139),
+            heroTag: null,
+            child: const Icon(Icons.remove),
+          ),
+          SizedBox(width: 10),
+          FloatingActionButton(
+            onPressed: () {
+              globals.currentBloc = [];
+
+              for(var i=0;i<_points.length;i++) {
+                  globals.currentBloc.add(_points[i]['led']);
+              }
+
+              print(globals.currentBloc);
+            },
+            backgroundColor: Color.fromARGB(255, 65, 154, 226),
+            heroTag: null,
+            child: const Icon(Icons.save),
+          )          
+        ]
       ),
       body: InteractiveViewer(
         boundaryMargin: const EdgeInsets.all(5.0),
@@ -39,6 +68,7 @@ class _ScenePanel extends State<ScenePanel> {
               if(coords['x'] != 0) {
                 print(coords['x']);
                 print(coords['y']);
+                print(coords['led']);
                 _points.add(coords);
               }
             });
