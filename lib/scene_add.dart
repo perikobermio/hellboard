@@ -3,7 +3,7 @@ import 'package:select_form_field/select_form_field.dart';
 import 'dart:core';
 import 'config.dart' as config;
 import 'globals.dart' as globals;
-import 'main.dart' as sceneinit;
+import 'scene_select.dart' as sceneselect;
 import 'scene_panel.dart' as scenepanel;
 import 'package:firebase_database/firebase_database.dart';
 
@@ -37,11 +37,12 @@ class _SceneAdd extends State<SceneAdd> {
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                     child: SelectFormField(
                       type: SelectFormFieldType.dropdown, // or can be dialog
-                      initialValue: 'v+',
+                      initialValue: globals.newBloc['grade']!,
                       icon: Icon(Icons.grade),
                       labelText: 'Gradue',
                       items: config.grades,
-                      onChanged: (val) => newBloc['grade'] = val
+                      onChanged: (val) => globals.newBloc['grade'] = val,
+                      onSaved: (val) => globals.newBloc['grade'] = val!
                     )
                   ),
                   Padding(
@@ -75,8 +76,9 @@ class _SceneAdd extends State<SceneAdd> {
                         border: OutlineInputBorder(),
                         hintText: 'Izena',
                       ),
+                      controller: TextEditingController()..text = globals.newBloc['name']!,
                       onChanged: (val) {
-                        newBloc['name'] = val;
+                        globals.newBloc['name'] = val;
                       },
                     ),
                   ),
@@ -87,8 +89,9 @@ class _SceneAdd extends State<SceneAdd> {
                         border: OutlineInputBorder(),
                         hintText: 'Deskribapena',
                       ),
+                      controller: TextEditingController()..text = globals.newBloc['description']!,
                       onChanged: (val) {
-                        newBloc['description'] = val;
+                        globals.newBloc['description'] = val;
                       },
                     ),
                   ),
@@ -96,22 +99,22 @@ class _SceneAdd extends State<SceneAdd> {
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                     child: OutlinedButton(
                       onPressed: () {
-                        newBloc['id']     = DateTime.now().millisecondsSinceEpoch.toString();
-                        newBloc['value']  = globals.currentBloc.join('-');
-                        newBloc['owner']  = globals.user;
+                        globals.newBloc['id']     = DateTime.now().millisecondsSinceEpoch.toString();
+                        globals.newBloc['value']  = globals.currentBloc.join('-');
+                        globals.newBloc['owner']  = globals.user;
 
-                        String grade = getGrade(newBloc['grade']);
+                        String grade = getGrade(globals.newBloc['grade']);
                         int key = globals.vias[grade].length;
                         final Map<String, Map> updates = {};
 
-                        updates[key.toString()] = newBloc;
+                        updates[key.toString()] = globals.newBloc;
 
-                        globals.vias[grade].add(newBloc);
+                        globals.vias[grade].add(globals.newBloc);
                         FirebaseDatabase.instance.ref('/vias/$grade/').update(updates);
 
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => sceneinit.SceneInit()),
+                          MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),
                         );
                       },
                       child: const Text('Gorde'),
