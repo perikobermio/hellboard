@@ -19,6 +19,8 @@ class _SceneLogin extends State<SceneLogin> {
   @override
   Widget build(BuildContext context) {
 
+    globals.user  = dropdownValue!;
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

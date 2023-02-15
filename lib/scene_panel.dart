@@ -12,10 +12,15 @@ class ScenePanel extends StatefulWidget {
 }
 
 class _ScenePanel extends State<ScenePanel> {
-  List<Map>     _points = [];
+  List<Map>     _points   = [];
+  bool          calculate = true;
 
   @override
   Widget build(BuildContext context) {
+    if(calculate && globals.newBloc['value'] != '') {
+      _points = setPoints();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Hellboard 40ko panela'),
@@ -36,15 +41,17 @@ class _ScenePanel extends State<ScenePanel> {
           SizedBox(width: 10),
           FloatingActionButton(
             onPressed: () {
-              globals.currentBloc = [];
+              List aValue = [];
 
               for(var i=0;i<_points.length;i++) {
-                  globals.currentBloc.add(_points[i]['led']);
+                  aValue.add(_points[i]['led']);
               }
+
+              globals.newBloc['value'] = aValue.join('-');
 
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => sceneadd.SceneAdd()),
+                MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: true)),
               );
             },
             backgroundColor: Color.fromARGB(255, 65, 154, 226),
@@ -66,14 +73,12 @@ class _ScenePanel extends State<ScenePanel> {
             //print(global.dx);
             //print(global.dy);
 
-            setState(() {
-              if(coords['x'] != 0) {
-                print(coords['x']);
-                print(coords['y']);
-                print(coords['led']);
+            if(coords['x'] != 0) {
+              setState(() {
+                calculate = false;
                 _points.add(coords);
-              }
-            });
+              });
+            }
           },
           child: Stack(
             children: [
@@ -96,10 +101,10 @@ class _ScenePanel extends State<ScenePanel> {
               ),
               ..._points.map((point) => Positioned(
                 left: 0,
-                top:  0,
+                top: 0,
                 child: Container(
-                  width: 1,
-                  height: 1,
+                  width: 0,
+                  height: 0,
                   decoration: BoxDecoration(
                     shape: BoxShape.rectangle,
                     border: Border.all(
@@ -126,4 +131,18 @@ Map getRealCoords(coords) {
   }
 
   return ret;
+}
+
+List<Map> setPoints() {
+  List<Map>     p     = [];
+  List<dynamic> point = [];
+
+  for(var led in globals.newBloc['value'].split('-') ) {
+    point = globals.panel40.where((i) => i['led'] == led).toList();
+    if(point.isNotEmpty) {
+      p.add(point[0]);
+    }
+  }
+
+  return p;
 }

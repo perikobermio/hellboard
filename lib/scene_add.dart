@@ -8,7 +8,8 @@ import 'scene_panel.dart' as scenepanel;
 import 'package:firebase_database/firebase_database.dart';
 
 class SceneAdd extends StatefulWidget {
-  SceneAdd();
+  final bool edit;
+  SceneAdd({required this.edit});
 
   @override
   State<SceneAdd> createState() => _SceneAdd();
@@ -82,7 +83,7 @@ class _SceneAdd extends State<SceneAdd> {
                         border: OutlineInputBorder(),
                         hintText: 'Blokie',
                       ),
-                      controller: TextEditingController()..text = globals.currentBloc.join('-'),
+                      controller: TextEditingController()..text = globals.newBloc['value'],
                     ),
                   ),
                   Padding(
@@ -116,7 +117,6 @@ class _SceneAdd extends State<SceneAdd> {
                     child: OutlinedButton(
                       onPressed: () {
                         globals.newBloc['id']     = DateTime.now().millisecondsSinceEpoch.toString();
-                        globals.newBloc['value']  = globals.currentBloc.join('-');
                         globals.newBloc['owner']  = globals.user;
 
                         String grade = getGrade(globals.newBloc['grade']);

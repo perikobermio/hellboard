@@ -49,11 +49,10 @@ class SceneSelectHome extends StatelessWidget {
                 tooltip: 'Edite',
                 onPressed: () {
                   print('GOTO: ADD');
-                  print(via);
                   globals.newBloc = via;
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => sceneadd.SceneAdd()),
+                    MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: true)),
                   );
                 },
               ),
@@ -101,7 +100,7 @@ class SceneSelectHome extends StatelessWidget {
                 globals.clearNewBloc();
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => sceneadd.SceneAdd()),
+                  MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: false)),
                 );
               },
             ),
