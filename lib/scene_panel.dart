@@ -18,7 +18,7 @@ class _ScenePanel extends State<ScenePanel> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hellboard gure panela'),
+        title: Text('Hellboard 40ko panela'),
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,

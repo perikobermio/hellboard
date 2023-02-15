@@ -24,6 +24,22 @@ class _SceneAdd extends State<SceneAdd> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Hellboard geitxu Blokie'),
+        automaticallyImplyLeading: false,
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              tooltip: 'Hasikerara',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),
+                );
+              },
+            ),
+          )
+        ]
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

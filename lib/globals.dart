@@ -7,4 +7,8 @@ List<dynamic> panel40       = [];
 List<String> currentBloc    = [];
 BluetoothConnection? connBT;
 String user                 = '';
-Map<String, String> newBloc = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': ''};
+Map<String, dynamic> newBloc = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': ''};
+
+void clearNewBloc() {
+  newBloc = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': ''};
+}
