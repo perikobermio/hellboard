@@ -13,6 +13,8 @@ class SceneSelectHome extends StatelessWidget {
       return globals.connBT != null;
     }
 
+    globals.orderVias();
+
     getDetail(grade) {
       List<Widget> items = [];
       const colors = {
@@ -48,7 +50,6 @@ class SceneSelectHome extends StatelessWidget {
                 icon: const Icon(Icons.edit),
                 tooltip: 'Edite',
                 onPressed: () {
-                  print('GOTO: ADD');
                   globals.newBloc = via;
                   Navigator.push(
                     context,

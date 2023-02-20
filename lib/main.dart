@@ -32,11 +32,6 @@ Future<void> preLoad() async {
   if(Firebase.apps.isEmpty) {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   }
-  
-  /*DatabaseReference listening = FirebaseDatabase.instance.ref("vias");
-  listening.onChildChanged.listen((event) {
-    print('yeeeeeeja');
-  });*/
 
   if(globals.vias.isEmpty) {
     final httpPackageUrl            = Uri.parse(config.viasFile);

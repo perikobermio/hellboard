@@ -12,3 +12,12 @@ Map<String, dynamic> newBloc  = { 'id': '', 'grade': 'v','owner': '','value': ''
 void clearNewBloc() {
   newBloc = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': ''};
 }
+
+void orderVias() {
+  List<dynamic> temp = [];
+  for(var grade in vias.keys) {
+    temp = vias[grade];
+    temp.sort((a,b) => a['grade'].compareTo(b['grade']));
+    vias[grade] = temp;
+  }
+}

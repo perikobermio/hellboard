@@ -32,6 +32,7 @@ class _ScenePanel extends State<ScenePanel> {
           FloatingActionButton(
             onPressed: () {
               setState(() {
+                globals.newBloc['value'] = '';
                 _points = [];
               });
             },
@@ -69,7 +70,7 @@ class _ScenePanel extends State<ScenePanel> {
           onTapUp: (TapUpDetails details) {
             RenderBox box = context.findRenderObject() as RenderBox;
             Offset global = box.localToGlobal(details.localPosition);
-            Map coords = getRealCoords(global);
+            Map coords    = getRealCoords(global);
             
             print(global.dx);
             print(global.dy);
@@ -101,11 +102,11 @@ class _ScenePanel extends State<ScenePanel> {
                 )
               ),
               ..._points.map((point) => Positioned(
-                left: 198,
-                top: 150,
+                left: 213,
+                top: 195,
                 child: Container(
-                  width: 0,
-                  height: 0,
+                  width: 22,
+                  height: 18,
                   decoration: BoxDecoration(
                     shape: BoxShape.rectangle,
                     border: Border.all(
