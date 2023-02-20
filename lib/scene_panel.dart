@@ -5,7 +5,8 @@ import 'globals.dart' as globals;
 //import 'scene_add.dart' as scenepanel;
 
 class ScenePanel extends StatefulWidget {
-  ScenePanel();
+  final bool edit;
+  ScenePanel({required this.edit});
 
   @override
   State<ScenePanel> createState() => _ScenePanel();
@@ -51,7 +52,7 @@ class _ScenePanel extends State<ScenePanel> {
 
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: true)),
+                MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: widget.edit)),
               );
             },
             backgroundColor: Color.fromARGB(255, 65, 154, 226),
@@ -70,8 +71,8 @@ class _ScenePanel extends State<ScenePanel> {
             Offset global = box.localToGlobal(details.localPosition);
             Map coords = getRealCoords(global);
             
-            //print(global.dx);
-            //print(global.dy);
+            print(global.dx);
+            print(global.dy);
 
             if(coords['x'] != 0) {
               setState(() {
@@ -100,11 +101,11 @@ class _ScenePanel extends State<ScenePanel> {
                 )
               ),
               ..._points.map((point) => Positioned(
-                left: 0,
-                top: 0,
+                left: 197,
+                top: 114,
                 child: Container(
-                  width: 0,
-                  height: 0,
+                  width: 22,
+                  height: 22,
                   decoration: BoxDecoration(
                     shape: BoxShape.rectangle,
                     border: Border.all(

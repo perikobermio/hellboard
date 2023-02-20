@@ -7,6 +7,7 @@ import 'scene_select.dart' as sceneselect;
 import 'scene_panel.dart' as scenepanel;
 import 'package:firebase_database/firebase_database.dart';
 
+
 class SceneAdd extends StatefulWidget {
   final bool edit;
   SceneAdd({required this.edit});
@@ -18,7 +19,7 @@ class SceneAdd extends StatefulWidget {
 class _SceneAdd extends State<SceneAdd> {
   final GlobalKey<FormState> formKey = GlobalKey();
 
-  Map<String, String> newBloc = { 'id': '', 'grade': '','owner': '','value': '','name': '','description': ''};
+  String oldGrade = globals.newBloc['grade'];
 
   @override
   Widget build(BuildContext context) {
@@ -49,94 +50,84 @@ class _SceneAdd extends State<SceneAdd> {
               key: formKey,
               child: Column(
               children: <Widget>[
-
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: SelectFormField(
-                      type: SelectFormFieldType.dropdown, // or can be dialog
-                      initialValue: globals.newBloc['grade']!,
-                      icon: Icon(Icons.grade),
-                      labelText: 'Gradue',
-                      items: config.grades,
-                      onChanged: (val) => globals.newBloc['grade'] = val,
-                      onSaved: (val) => globals.newBloc['grade'] = val!
-                    )
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: IconButton(
-                      icon: const Icon(Icons.sports_score),
-                      tooltip: 'Aukeratu blokie',
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => scenepanel.ScenePanel()),
-                        );
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: TextField(
-                      enabled: false, 
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Blokie',
-                      ),
-                      controller: TextEditingController()..text = globals.newBloc['value'],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Izena',
-                      ),
-                      controller: TextEditingController()..text = globals.newBloc['name']!,
-                      onChanged: (val) {
-                        globals.newBloc['name'] = val;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Deskribapena',
-                      ),
-                      controller: TextEditingController()..text = globals.newBloc['description']!,
-                      onChanged: (val) {
-                        globals.newBloc['description'] = val;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: OutlinedButton(
-                      onPressed: () {
-                        globals.newBloc['id']     = DateTime.now().millisecondsSinceEpoch.toString();
-                        globals.newBloc['owner']  = globals.user;
-
-                        String grade = getGrade(globals.newBloc['grade']);
-                        int key = globals.vias[grade].length;
-                        final Map<String, Map> updates = {};
-
-                        updates[key.toString()] = globals.newBloc;
-
-                        globals.vias[grade].add(globals.newBloc);
-                        FirebaseDatabase.instance.ref('/vias/$grade/').update(updates);
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),
-                        );
-                      },
-                      child: const Text('Gorde'),
-                    )
-
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => scenepanel.ScenePanel(edit: widget.edit)),
+                      );
+                    },
+                    icon: Icon(Icons.sports_score),
+                    label: Text((globals.newBloc['value'] != '')? globals.newBloc['value'] : 'Aukeratu Blokie'),
                   )
+                ),
+
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: SelectFormField(
+                    type: SelectFormFieldType.dropdown, // or can be dialog
+                    initialValue: globals.newBloc['grade']!,
+                    icon: Icon(Icons.grade),
+                    labelText: 'Gradue',
+                    items: config.grades,
+                    onChanged: (val) => globals.newBloc['grade'] = val,
+                    onSaved: (val) => globals.newBloc['grade'] = val!
+                  )
+                ),
+                
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Izena',
+                    ),
+                    controller: TextEditingController()..text = globals.newBloc['name']!,
+                    onChanged: (val) {
+                      globals.newBloc['name'] = val;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Deskribapena',
+                    ),
+                    controller: TextEditingController()..text = globals.newBloc['description']!,
+                    onChanged: (val) {
+                      globals.newBloc['description'] = val;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: OutlinedButton(
+                    onPressed: () {
+                      String grade = getGrade(globals.newBloc['grade']);
+
+                      if(widget.edit) {
+                        oldGrade = getGrade(oldGrade);
+                        updateVia(grade, oldGrade);
+                      } else {
+                        globals.newBloc['owner']  = globals.userfile['user'];
+                        globals.newBloc['id']     = DateTime.now().millisecondsSinceEpoch.toString();
+                        insertVia(grade);
+                      }
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),
+                      );
+
+                    },
+                    child: const Text('Gorde'),
+                  )
+
+                )
               ]
             )
         )],
@@ -158,4 +149,32 @@ String getGrade(String? grade) {
   } else if(nine.contains(grade)) {   ret = 'ix'; }
 
   return ret;
+}
+
+Future<void> insertVia(grade) async {
+  int key                   = globals.vias[grade].length;
+  print(grade);
+  print(key);
+  Map<String, Map> updates  = {};
+
+  updates[key.toString()]   = globals.newBloc;
+  
+  FirebaseDatabase.instance.ref('/vias/$grade/').update(updates);
+  globals.vias[grade].add(globals.newBloc);
+}
+
+Future<void> updateVia(grade, oldGrade) async {
+  if(oldGrade == grade) {
+    int index = globals.vias[grade].indexWhere((i) => i['id'] == globals.newBloc['id']);
+    globals.vias[grade][index] = globals.newBloc;
+
+    DatabaseReference ref = FirebaseDatabase.instance.ref("vias/$grade/$index");
+    await ref.set(globals.newBloc);
+  } else {
+    print(oldGrade);
+    int index             = globals.vias[oldGrade].indexWhere((i) => i['id'] == globals.newBloc['id']);
+    FirebaseDatabase.instance.ref("vias/$oldGrade/$index").remove();
+    globals.vias[oldGrade].removeAt(index);
+    insertVia(grade);
+  }
 }
