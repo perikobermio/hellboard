@@ -23,14 +23,27 @@ class _SceneLogin extends State<SceneLogin> {
 
   @override
   Widget build(BuildContext context) {
+    final List<DropdownMenuItem<String>> computedUsers = [];
+
     dropdownValue = globals.userfile['user'];
     widget.userfile.preparePersonal();
+
+    for(var key in globals.users.keys) {
+      computedUsers.add(DropdownMenuItem<String>(
+        value: key,
+        child: Text(globals.users[key]['label']),
+      ));
+    }
 
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Padding(
+            padding: EdgeInsets.only(bottom: 40),
+            child: Image(image: AssetImage('assets/img/logoh.png'))
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -46,17 +59,13 @@ class _SceneLogin extends State<SceneLogin> {
                 ),
                 onChanged: (String? value) {
                   setState(() {
-                    globals.userfile['user'] = value.toString();
-                    dropdownValue = globals.userfile['user'];
+                    globals.userfile['user']  = value.toString();
+                    globals.userfile['data']  = globals.users[globals.userfile['user']];
+                    dropdownValue             = globals.userfile['user'];
                   });
                 
                 },
-                items: config.users.map<DropdownMenuItem<String>>((value) {
-                  return DropdownMenuItem<String>(
-                    value: value['value'],
-                    child: Text(value['label']),
-                  );
-                }).toList(),
+                items: computedUsers,
               ),
               SizedBox(width: 15),
               OutlinedButton(

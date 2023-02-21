@@ -2,12 +2,14 @@ library globals;
 
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
-Map<String, dynamic> vias     = {};
-List<dynamic> panel40         = [];
-Map<String, dynamic> userfile = {'user':'-'};
+Map<String, dynamic> vias         = {};
+Map<String, dynamic> users        = {};
+String user                       = '';
+List<dynamic> panel40             = [];
+Map<String, dynamic> userfile     = {'user':'-', 'data': {}};
 BluetoothConnection? connBT;
-String user                   = '';
-Map<String, dynamic> newBloc  = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': ''};
+
+Map<String, dynamic> newBloc      = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': ''};
 
 void clearNewBloc() {
   newBloc = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': ''};

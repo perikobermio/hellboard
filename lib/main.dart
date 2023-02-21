@@ -39,6 +39,12 @@ Future<void> preLoad() async {
     globals.vias                    = jsonDecode(promiseVias);
   }
 
+  if(globals.users.isEmpty) {
+    final httpPackageUrl            = Uri.parse(config.usersFile);
+    final promiseUsers              = await http.read(httpPackageUrl);
+    globals.users                   = jsonDecode(promiseUsers);
+  }
+
   if(globals.panel40.isEmpty) {
     final String response = await rootBundle.loadString('assets/panel40.json');
     globals.panel40       = jsonDecode(response);

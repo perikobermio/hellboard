@@ -1,5 +1,6 @@
 const btAddress = 'C8:F0:9E:75:16:42';
 const viasFile  = 'https://hellboard-default-rtdb.firebaseio.com/vias.json';
+const usersFile  = 'https://hellboard-default-rtdb.firebaseio.com/users.json';
 const List<Map<String, dynamic>> grades = [
                 {'value': '-',    'label': '-'},    {'value': 'V',    'label': 'V'},    {'value': 'V+',    'label': 'V+'},
                 {'value': '6a',   'label': '6a'},   {'value': '6a+',   'label': '6a+'}, {'value': '6b',   'label': '6b'},   
@@ -27,5 +28,6 @@ const List<Map<String, dynamic>> users = [
                 {'value': 'portu',      'label': 'Ander Portuondo'},
                 {'value': 'aitzol',     'label': 'Aitzol Arrasate'},
                 {'value': 'denis',      'label': 'Denis Oiartzun'},
-                {'value': 'armen',      'label': 'Aitzol Armendariz'}
+                {'value': 'armen',      'label': 'Aitzol Armendariz'},
+                {'value': 'bittor',     'label': 'Bittor Climber'}
               ];

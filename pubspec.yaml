@@ -33,4 +33,5 @@ flutter:
     - assets/vias.json
     - assets/panel40.json
     - assets/img/panel40.png
+    - assets/img/logoh.png
     - assets/img/panel40_dev.png
