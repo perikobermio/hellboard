@@ -105,28 +105,46 @@ class _SceneAdd extends State<SceneAdd> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                  child: OutlinedButton(
-                    onPressed: () {
-                      String grade = getGrade(globals.newBloc['grade']);
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      if(widget.edit) ...[
+                        OutlinedButton(
+                          onPressed: () {
+                            String grade = getGrade(globals.newBloc['grade']);
+                            
+                            deleteVia(grade);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),
+                            );
+                          },
+                          child: const Text('Ezabatu'),
+                        )
+                      ],
+                      ElevatedButton(
+                        onPressed: () {
+                          String grade = getGrade(globals.newBloc['grade']);
 
-                      if(widget.edit) {
-                        oldGrade = getGrade(oldGrade);
-                        updateVia(grade, oldGrade);
-                      } else {
-                        globals.newBloc['owner']  = globals.userfile['user'];
-                        globals.newBloc['id']     = DateTime.now().millisecondsSinceEpoch.toString();
-                        insertVia(grade);
-                      }
+                          if(widget.edit) {
+                            oldGrade = getGrade(oldGrade);
+                            updateVia(grade, oldGrade);
+                          } else {
+                            globals.newBloc['owner']  = globals.userfile['user'];
+                            globals.newBloc['id']     = DateTime.now().millisecondsSinceEpoch.toString();
+                            insertVia(grade);
+                          }
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),
-                      );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),
+                          );
 
-                    },
-                    child: const Text('Gorde'),
+                        },
+                        child: const Text('Gorde'),
+                      )
+                    ]
                   )
-
                 )
               ]
             )
@@ -153,8 +171,6 @@ String getGrade(String? grade) {
 
 Future<void> insertVia(grade) async {
   int key                   = globals.vias[grade].length;
-  print(grade);
-  print(key);
   Map<String, Map> updates  = {};
 
   updates[key.toString()]   = globals.newBloc;
@@ -171,10 +187,16 @@ Future<void> updateVia(grade, oldGrade) async {
     DatabaseReference ref = FirebaseDatabase.instance.ref("vias/$grade/$index");
     await ref.set(globals.newBloc);
   } else {
-    print(oldGrade);
-    int index             = globals.vias[oldGrade].indexWhere((i) => i['id'] == globals.newBloc['id']);
-    FirebaseDatabase.instance.ref("vias/$oldGrade/$index").remove();
+    int index = globals.vias[oldGrade].indexWhere((i) => i['id'] == globals.newBloc['id']);
     globals.vias[oldGrade].removeAt(index);
+    DatabaseReference ref = FirebaseDatabase.instance.ref("vias/$oldGrade");
+    await ref.set(globals.vias[oldGrade]);
     insertVia(grade);
   }
+}
+Future<void> deleteVia(grade) async {
+  int index = globals.vias[grade].indexWhere((i) => i['id'] == globals.newBloc['id']);
+  globals.vias[grade].removeAt(index);
+  DatabaseReference ref = FirebaseDatabase.instance.ref("vias/$grade");
+  await ref.set(globals.vias[grade]);
 }
