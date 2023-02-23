@@ -46,9 +46,12 @@ Future<void> preLoad() async {
   }
 
   if(globals.panel40.isEmpty) {
-    final String response = await rootBundle.loadString('assets/panel40.json');
-    globals.panel40       = jsonDecode(response);
+    final String response           = await rootBundle.loadString('assets/panel40.json');
+    globals.panel40                 = jsonDecode(response);
   }
+
+  final userfile = globals.UserFile();
+  await userfile.preparePersonal();
 }
 
 class SceneInit extends StatefulWidget {
@@ -63,14 +66,18 @@ class _SceneInit extends State<SceneInit> {
     return FutureBuilder<void>(
       future: preLoad(),
       builder: (context, snapshot) {
-        return MaterialApp(
-          title: 'Hellboard APP',
-          theme: ThemeData(
-            primarySwatch: Colors.lightGreen,
-          ),
-          //home: sceneselect.SceneSelectHome()
-          home: scenelogin.SceneLogin()
-        );
+        if(snapshot.connectionState == ConnectionState.done) {
+          return MaterialApp(
+            title: 'Hellboard APP',
+            theme: ThemeData(
+              primarySwatch: Colors.lightGreen,
+            ),
+            //home: sceneselect.SceneSelectHome()
+            home: scenelogin.SceneLogin()
+          );
+        } else {
+          return CircularProgressIndicator(); 
+        }
       }
     );
   }

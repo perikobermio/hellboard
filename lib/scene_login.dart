@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'scene_select.dart' as sceneselect;
-import 'config.dart' as config;
 import 'dart:core';
-import 'dart:io';
-import 'dart:convert';
-import 'package:path_provider/path_provider.dart';
 import 'globals.dart' as globals;
 
 class SceneLogin extends StatefulWidget {
   SceneLogin();
-
-  final userfile = UserFile();
 
   @override
   State<SceneLogin> createState() => _SceneLogin();
@@ -23,11 +17,11 @@ class _SceneLogin extends State<SceneLogin> {
 
   @override
   Widget build(BuildContext context) {
-    final List<DropdownMenuItem<String>> computedUsers = [];
+    List<DropdownMenuItem<String>> computedUsers = [];
 
     dropdownValue = globals.userfile['user'];
-    widget.userfile.preparePersonal();
-
+    if(dropdownValue == '') dropdownValue = 'erik';
+    
     for(var key in globals.users.keys) {
       computedUsers.add(DropdownMenuItem<String>(
         value: key,
@@ -70,12 +64,16 @@ class _SceneLogin extends State<SceneLogin> {
               SizedBox(width: 15),
               OutlinedButton(
                 onPressed: () {
-                  globals.userfile['user'] = dropdownValue;
-                  widget.userfile.saveUser();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),
-                  );
+                    globals.userfile['user'] = dropdownValue;
+
+                    final userfile = globals.UserFile();
+                    userfile.saveUser();
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),
+                    );
+                  
                 },
                 child: const Text('Sartun'),
               )
@@ -85,35 +83,4 @@ class _SceneLogin extends State<SceneLogin> {
       )
     );
   }
-}
-
-class UserFile {
-
-  Future<File> get _personalFile async {
-    final directory = await getApplicationDocumentsDirectory();
-    final path = directory.path;
-    return File('$path/personal.json');
-  }
-
-  Future<void> preparePersonal() async {
-    try {
-      final file          = await _personalFile;
-      String contents     = '';
-
-      if (await file.exists()) {
-        contents          = await file.readAsString();
-        globals.userfile  = jsonDecode(contents);
-      } else {
-        await file.writeAsString(json.encode(globals.userfile));
-      }
-    } catch (e) {
-      print('personal.json FAIL');
-    }
-  }
-
-  Future<void> saveUser() async {
-    final file          = await _personalFile;
-    await file.writeAsString(json.encode(globals.userfile));
-  }
-
 }

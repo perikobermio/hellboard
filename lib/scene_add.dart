@@ -112,7 +112,7 @@ class _SceneAdd extends State<SceneAdd> {
                         OutlinedButton(
                           onPressed: () {
                             String grade = getGrade(globals.newBloc['grade']);
-                            
+
                             deleteVia(grade);
                             Navigator.push(
                               context,
@@ -170,13 +170,23 @@ String getGrade(String? grade) {
 }
 
 Future<void> insertVia(grade) async {
-  int key                   = globals.vias[grade].length;
+  int key                   = 0;
   Map<String, Map> updates  = {};
 
-  updates[key.toString()]   = globals.newBloc;
+  if(!globals.vias.containsKey(grade)) { //ezpadauen gradue
+    updates[grade] = {};
+    updates[grade]?[key.toString()]   = globals.newBloc;
+
+    FirebaseDatabase.instance.ref('/vias/').update(updates);
+    globals.vias[grade] = [];
+    globals.vias[grade].add(globals.newBloc);
+  } else { //gradue badauen
+    key = globals.vias[grade].length;
+    updates[key.toString()]   = globals.newBloc;
   
-  FirebaseDatabase.instance.ref('/vias/$grade/').update(updates);
-  globals.vias[grade].add(globals.newBloc);
+    FirebaseDatabase.instance.ref('/vias/$grade/').update(updates);
+    globals.vias[grade].add(globals.newBloc);
+  }
 }
 
 Future<void> updateVia(grade, oldGrade) async {
