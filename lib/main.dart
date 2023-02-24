@@ -66,7 +66,7 @@ class _SceneInit extends State<SceneInit> {
     return FutureBuilder<void>(
       future: preLoad(),
       builder: (context, snapshot) {
-        if(snapshot.connectionState == ConnectionState.done) {
+        //if(snapshot.connectionState == ConnectionState.done) {
           return MaterialApp(
             title: 'Hellboard APP',
             theme: ThemeData(
@@ -75,9 +75,9 @@ class _SceneInit extends State<SceneInit> {
             //home: sceneselect.SceneSelectHome()
             home: scenelogin.SceneLogin()
           );
-        } else {
-          return CircularProgressIndicator(); 
-        }
+        //} else {
+          //return CircularProgressIndicator(); 
+        //}
       }
     );
   }
