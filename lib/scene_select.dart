@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'scene_add.dart' as sceneadd;
 import 'globals.dart' as globals;
+import 'config.dart' as config;
 
-class SceneSelectHome extends StatelessWidget {
+
+class SceneSelectHome extends StatefulWidget {
   SceneSelectHome();
+
+  @override
+  State<SceneSelectHome> createState() => _SceneSelectHome();
+}
+class _SceneSelectHome extends State<SceneSelectHome> {
+  _SceneSelectHome();
  
   @override
   Widget build(BuildContext context) {
@@ -15,47 +23,52 @@ class SceneSelectHome extends StatelessWidget {
 
     globals.orderVias();
 
+    getToolsMenu() {
+      List<PopupMenuItem> ret = [];
+      for(var item in config.viaTools) {
+        ret.add(PopupMenuItem(
+            value: item['id'],
+            child: Text(item['label'])
+          )
+        );
+      }
+      return ret;
+    }
+    List<PopupMenuItem> toolsMenu = getToolsMenu();
+
     getDetail(grade) {
       List<Widget> items = [];
-      const colors = {
-        'v': Color.fromARGB(255, 135, 135, 135),
-        'v+': Color.fromARGB(255, 135, 135, 135),
-        '6a': Color.fromARGB(255, 255, 240, 31),
-        '6a+': Color.fromARGB(255, 255, 240, 31),
-        '6b': Color.fromARGB(255, 109, 255, 76),
-        '6b+': Color.fromARGB(255, 109, 255, 76),
-        '6c': Color.fromARGB(255, 91, 225, 255),
-        '6c+': Color.fromARGB(255, 91, 225, 255),
-        '7a': Color.fromARGB(255, 255, 149, 1),
-        '7a+': Color.fromARGB(255, 255, 149, 1),
-        '7b': Color.fromARGB(255, 197, 105, 255),
-        '7b+': Color.fromARGB(255, 197, 105, 255),
-        '7c': Color.fromARGB(255, 252, 64, 64),
-        '7c+': Color.fromARGB(255, 252, 64, 64),
-        '8a': Color.fromARGB(255, 50, 50, 50),
-        '8a+': Color.fromARGB(255, 50, 50, 50),
-        '8b': Color.fromARGB(255, 0, 0, 0),
-        '8b+': Color.fromARGB(255, 0, 0, 0),
-        '8c': Color.fromARGB(255, 0, 0, 0),
-        '8c+': Color.fromARGB(255, 0, 0, 0),
-      };
-
+    
       grade.forEach((via) => {
           items.add(
             ListTile( 
-              leading: Text(via['grade'], style: TextStyle(fontSize: 18, color: colors[via['grade']])),
+              leading: Text(via['grade'], style: TextStyle(fontSize: 18, color: config.colors[via['grade']])),
               title: Text(via['name']),
               subtitle: Text(via['owner']),
-              trailing: IconButton(
-                icon: const Icon(Icons.edit),
-                tooltip: 'Edite',
-                onPressed: () {
-                  globals.newBloc = via;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: true)),
-                  );
-                },
+              trailing: Wrap(
+                children: <Widget>[
+                  PopupMenuButton(
+                    onSelected: (value) {
+                      print(value);
+                      print(via);
+                      print(globals.userfile);
+                    },
+                    itemBuilder: (BuildContext bc) {
+                      return toolsMenu;
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    tooltip: 'Edite',
+                    onPressed: () {
+                      globals.newBloc = via;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: true)),
+                      );
+                    }
+                  )
+                ],
               ),
               onTap: () {
                 print('LOAD: BLOC');

@@ -7,7 +7,6 @@ import 'package:path_provider/path_provider.dart';
 
 Map<String, dynamic> vias         = {};
 Map<String, dynamic> users        = {};
-String user                       = '';
 List<dynamic> panel40             = [];
 Map<String, dynamic> userfile     = {'user':'', 'data': {}};
 BluetoothConnection? connBT;
