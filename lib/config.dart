@@ -19,25 +19,31 @@ const List<Map<String, dynamic>> grades = [
 
 const colors = {
   'v': Color.fromARGB(255, 135, 135, 135),
-  'v+': Color.fromARGB(255, 135, 135, 135),
-  '6a': Color.fromARGB(255, 255, 240, 31),
-  '6a+': Color.fromARGB(255, 255, 240, 31),
-  '6b': Color.fromARGB(255, 109, 255, 76),
-  '6b+': Color.fromARGB(255, 109, 255, 76),
-  '6c': Color.fromARGB(255, 91, 225, 255),
-  '6c+': Color.fromARGB(255, 91, 225, 255),
-  '7a': Color.fromARGB(255, 255, 149, 1),
-  '7a+': Color.fromARGB(255, 255, 149, 1),
-  '7b': Color.fromARGB(255, 197, 105, 255),
-  '7b+': Color.fromARGB(255, 197, 105, 255),
-  '7c': Color.fromARGB(255, 252, 64, 64),
-  '7c+': Color.fromARGB(255, 252, 64, 64),
-  '8a': Color.fromARGB(255, 50, 50, 50),
-  '8a+': Color.fromARGB(255, 50, 50, 50),
-  '8b': Color.fromARGB(255, 0, 0, 0),
-  '8b+': Color.fromARGB(255, 0, 0, 0),
+  'v+': Color.fromARGB(255, 113, 113, 113),
+  '6a': Color.fromARGB(255, 144, 255, 74),
+  '6a+': Color.fromARGB(255, 59, 153, 0),
+  '6b': Color.fromARGB(255, 72, 255, 148),
+  '6b+': Color.fromARGB(255, 0, 130, 54),
+  '6c': Color.fromARGB(255, 91, 187, 255),
+  '6c+': Color.fromARGB(255, 0, 121, 148),
+  '7a': Color.fromARGB(255, 195, 97, 255),
+  '7a+': Color.fromARGB(255, 157, 0, 255),
+  '7b': Color.fromARGB(255, 81, 34, 108),
+  '7b+': Color.fromARGB(255, 61, 0, 99),
+  '7c': Color.fromARGB(255, 254, 175, 96),
+  '7c+': Color.fromARGB(255, 255, 128, 0),
+  '8a': Color.fromARGB(255, 255, 110, 110),
+  '8a+': Color.fromARGB(255, 255, 0, 0),
+  '8b': Color.fromARGB(255, 149, 57, 57),
+  '8b+': Color.fromARGB(255, 63, 0, 0),
   '8c': Color.fromARGB(255, 0, 0, 0),
   '8c+': Color.fromARGB(255, 0, 0, 0),
+  '9a': Color.fromARGB(255, 0, 0, 0),
+  '9a+': Color.fromARGB(255, 0, 0, 0),
+  '9b': Color.fromARGB(255, 0, 0, 0),
+  '9b+': Color.fromARGB(255, 0, 0, 0),
+  '9c': Color.fromARGB(255, 0, 0, 0),
+  '9c+': Color.fromARGB(255, 0, 0, 0),
 };
 
 const List<Map> viaTools = [
@@ -49,9 +55,9 @@ const List<Map> viaTools = [
     "label": "Borra"
   },{
     "id": "show_user_vies",
-    "label": "<user>-n viek"
+    "label": "Egilien viek"
   },{
     "id": "show_grade_vies",
-    "label": "<user> graduko viek"
+    "label": "Gradu bardineko viek"
   }
 ];

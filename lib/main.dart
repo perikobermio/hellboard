@@ -29,9 +29,9 @@ Future<void> loadVias() async {
 }
 
 Future<void> loadUsers() async {
-  final httpPackageUrl            = Uri.parse(config.usersFile);
-  final promiseUsers              = await http.read(httpPackageUrl);
-  globals.users                   = jsonDecode(promiseUsers);
+  final httpPackageUrl = Uri.parse(config.usersFile);
+  final promiseUsers   = await http.read(httpPackageUrl);
+  globals.users        = jsonDecode(promiseUsers);
 }
 
 Future<void> preLoad() async {

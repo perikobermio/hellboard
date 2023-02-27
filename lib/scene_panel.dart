@@ -102,11 +102,11 @@ class _ScenePanel extends State<ScenePanel> {
                 )
               ),
               ..._points.map((point) => Positioned(
-                left: 330,
-                top: 293,
+                left: 258,
+                top: 330,
                 child: Container(
-                  width: 20,
-                  height: 18,
+                  width: 26,
+                  height: 25,
                   decoration: BoxDecoration(
                     shape: BoxShape.rectangle,
                     border: Border.all(
