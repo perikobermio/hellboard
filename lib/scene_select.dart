@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'scene_add.dart' as sceneadd;
 import 'globals.dart' as globals;
 import 'config.dart' as config;
-
+import 'package:firebase_database/firebase_database.dart';
 
 class SceneSelectHome extends StatefulWidget {
   SceneSelectHome();
@@ -16,25 +16,23 @@ class _SceneSelectHome extends State<SceneSelectHome> {
  
   @override
   Widget build(BuildContext context) {
+    ViaActions vActions = ViaActions();
 
     bool isConnected() {
       return globals.connBT != null;
     }
 
-    globals.orderVias();
-
-    getToolsMenu() {
-      List<PopupMenuItem> ret = [];
-      for(var item in config.viaTools) {
-        ret.add(PopupMenuItem(
-            value: item['id'],
-            child: Text(item['label'])
-          )
-        );
+    Future<void> viaAction(action, via) async {
+      if(action == 'done') {
+        await vActions.setDone(via, globals.userfile);
+      } else if(action == 'project') {
+        await vActions.setProject(via, globals.userfile);
+      } else if(action == 'regrade') {
+        await vActions.regrade();
       }
-      return ret;
     }
-    List<PopupMenuItem> toolsMenu = getToolsMenu();
+
+    globals.orderVias();
 
     getDetail(grade) {
       List<Widget> items = [];
@@ -44,29 +42,79 @@ class _SceneSelectHome extends State<SceneSelectHome> {
             ListTile( 
               leading: Text(via['grade'], style: TextStyle(fontSize: 18, color: config.colors[via['grade']])),
               title: Text(via['name']),
-              subtitle: Text(via['owner']),
+              subtitle: Text(globals.users[via['owner']]['label']),
               trailing: Wrap(
                 children: <Widget>[
-                  PopupMenuButton(
-                    onSelected: (value) {
-                      print(value);
-                      print(via);
-                      print(globals.userfile);
-                    },
-                    itemBuilder: (BuildContext bc) {
-                      return toolsMenu;
-                    },
-                  ),
                   IconButton(
-                    icon: const Icon(Icons.edit),
-                    tooltip: 'Edite',
+                    icon: const Icon(Icons.done),
+                    tooltip: 'Inje',
+                    color: (globals.userfile['vias'].keys.contains(via['id']))? Color.fromARGB(255, 53, 148, 212) : Color.fromARGB(255, 206, 206, 206),
                     onPressed: () {
-                      globals.newBloc = via;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: true)),
-                      );
+                      viaAction('done', via).then((a) => setState(() {
+                        print('Via DONE click');
+                      }));
                     }
+                  ),
+                  PopupMenuButton(
+                    padding: EdgeInsets.zero,
+                    onSelected: (item) {
+                      if(item == 'edit') {
+                        globals.newBloc = via;
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: true)));
+                      } else if(item == 'show_user_vies') {
+                        setState(() {
+                          print('show_user_vies');
+                        });
+                      } else if(item == 'delete') {
+                          showModalBottomSheet<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Container(
+                                height: 200,
+                                color: Color.fromARGB(255, 25, 123, 64),
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      const Text('Seguru zauz borra guzule?'),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          ElevatedButton(
+                                            child: const Text('Ez'),
+                                            onPressed: () => Navigator.pop(context),
+                                          ),
+                                          SizedBox(width: 10),
+                                          ElevatedButton(
+                                            child: const Text('Bai'),
+                                            onPressed: () {
+                                              globals.ViasActions va = globals.ViasActions();
+                                              String grade = globals.getGrade(via['grade']);
+
+                                              va.deleteVia(grade, via['id']).then((a) => setState(() {
+                                                Navigator.pop(context);
+                                              }));
+                                            }
+                                          )
+                                        ]
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                      }
+                    },
+                    itemBuilder: (BuildContext context) {
+                      return config.viaTools.map((item) {
+                        return  PopupMenuItem<String>(
+                          value: item['id'],
+                          child: Text(item['label']),
+                        );
+                      }).toList();
+                    },
                   )
                 ],
               ),
@@ -91,7 +139,7 @@ class _SceneSelectHome extends State<SceneSelectHome> {
       vias.forEach((k, g) => {
           items.add(
             ExpansionTile(
-              title: Text(k.toUpperCase()),
+              title: Text(k.toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               children: getDetail(g)
             )
           )
@@ -139,5 +187,33 @@ class _SceneSelectHome extends State<SceneSelectHome> {
       
       )
     );
+  }
+}
+
+
+class ViaActions {
+
+  Future<void> setDone(via, user) async {
+    String userid = user['user'];
+    String viaid  = via['id'].toString();
+
+    DatabaseReference ref = FirebaseDatabase.instance.ref("users/$userid/vias/$viaid");
+    var a = await ref.get();
+
+    if(a.value == null) {
+      await ref.set(true);
+      globals.userfile['vias'][viaid] = true;
+    } else {
+      await ref.remove();
+      globals.userfile['vias'].remove(viaid);
+    }
+  }
+
+  Future<void> setProject(via, user) async {
+    print(globals.userfile);
+  }
+
+  Future<void> regrade() async {
+    print(globals.userfile);
   }
 }

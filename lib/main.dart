@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'globals.dart' as globals;
 
 import 'package:firebase_core/firebase_core.dart';
-//import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'firebase_options.dart';
 
 void main() {
@@ -18,6 +18,20 @@ void main() {
     title:  'Hellboard',
     home:   SceneInit(),
   ));
+}
+
+Future<void> loadVias() async {
+  final httpPackageUrl = Uri.parse(config.viasFile);
+  final promiseVias    = await http.read(httpPackageUrl);
+  globals.vias         = jsonDecode(promiseVias);
+
+  globals.orderVias();
+}
+
+Future<void> loadUsers() async {
+  final httpPackageUrl            = Uri.parse(config.usersFile);
+  final promiseUsers              = await http.read(httpPackageUrl);
+  globals.users                   = jsonDecode(promiseUsers);
 }
 
 Future<void> preLoad() async {
@@ -34,15 +48,19 @@ Future<void> preLoad() async {
   }
 
   if(globals.vias.isEmpty) {
-    final httpPackageUrl            = Uri.parse(config.viasFile);
-    final promiseVias               = await http.read(httpPackageUrl);
-    globals.vias                    = jsonDecode(promiseVias);
+    await loadVias();
+    final watchVias = FirebaseDatabase.instance.ref("vias");
+    watchVias.onChildChanged.listen((event) {
+      loadVias();
+    });
   }
 
   if(globals.users.isEmpty) {
-    final httpPackageUrl            = Uri.parse(config.usersFile);
-    final promiseUsers              = await http.read(httpPackageUrl);
-    globals.users                   = jsonDecode(promiseUsers);
+    await loadUsers();
+    final watchUsers = FirebaseDatabase.instance.ref("users");
+    watchUsers.onChildChanged.listen((event) {
+      loadUsers();
+    });
   }
 
   if(globals.panel40.isEmpty) {
@@ -66,7 +84,7 @@ class _SceneInit extends State<SceneInit> {
     return FutureBuilder<void>(
       future: preLoad(),
       builder: (context, snapshot) {
-        //if(snapshot.connectionState == ConnectionState.done) {
+        if(snapshot.connectionState == ConnectionState.done) {
           return MaterialApp(
             title: 'Hellboard APP',
             theme: ThemeData(
@@ -75,9 +93,9 @@ class _SceneInit extends State<SceneInit> {
             //home: sceneselect.SceneSelectHome()
             home: scenelogin.SceneLogin()
           );
-        //} else {
-          //return CircularProgressIndicator(); 
-        //}
+        } else {
+          return CircularProgressIndicator(); 
+        }
       }
     );
   }

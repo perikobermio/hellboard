@@ -64,7 +64,8 @@ class _SceneLogin extends State<SceneLogin> {
               SizedBox(width: 15),
               OutlinedButton(
                 onPressed: () {
-                    globals.userfile['user'] = dropdownValue;
+                    globals.userfile['user']  = dropdownValue;
+                    globals.userfile['vias']  = globals.userViasDone();
 
                     final userfile = globals.UserFile();
                     userfile.saveUser();

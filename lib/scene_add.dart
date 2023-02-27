@@ -7,7 +7,6 @@ import 'scene_select.dart' as sceneselect;
 import 'scene_panel.dart' as scenepanel;
 import 'package:firebase_database/firebase_database.dart';
 
-
 class SceneAdd extends StatefulWidget {
   final bool edit;
   SceneAdd({required this.edit});
@@ -111,12 +110,46 @@ class _SceneAdd extends State<SceneAdd> {
                       if(widget.edit) ...[
                         OutlinedButton(
                           onPressed: () {
-                            String grade = getGrade(globals.newBloc['grade']);
+                            showModalBottomSheet<void>(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Container(
+                                  height: 200,
+                                  color: Color.fromARGB(255, 25, 123, 64),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        const Text('Seguru zauz borra guzule?'),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            ElevatedButton(
+                                              child: const Text('Ez'),
+                                              onPressed: () => Navigator.pop(context),
+                                            ),
+                                            SizedBox(width: 10),
+                                            ElevatedButton(
+                                              child: const Text('Bai'),
+                                              onPressed: () {
+                                                globals.ViasActions va = globals.ViasActions();
+                                                String grade = globals.getGrade(globals.newBloc['grade']);
 
-                            deleteVia(grade);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),
+                                                va.deleteVia(grade, globals.newBloc['id']);
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),
+                                                );
+                                              }
+                                            )
+                                          ]
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
                             );
                           },
                           child: const Text('Ezabatu'),
@@ -124,15 +157,16 @@ class _SceneAdd extends State<SceneAdd> {
                       ],
                       ElevatedButton(
                         onPressed: () {
-                          String grade = getGrade(globals.newBloc['grade']);
+                          globals.ViasActions va = globals.ViasActions();
+                          String grade = globals.getGrade(globals.newBloc['grade']);
 
                           if(widget.edit) {
-                            oldGrade = getGrade(oldGrade);
-                            updateVia(grade, oldGrade);
+                            oldGrade = globals.getGrade(oldGrade);
+                            va.updateVia(grade, oldGrade);
                           } else {
                             globals.newBloc['owner']  = globals.userfile['user'];
                             globals.newBloc['id']     = DateTime.now().millisecondsSinceEpoch.toString();
-                            insertVia(grade);
+                            va.insertVia(grade);
                           }
 
                           Navigator.push(
@@ -152,61 +186,4 @@ class _SceneAdd extends State<SceneAdd> {
       )
     );
   }
-}
-
-String getGrade(String? grade) {
-  String ret  = 'v';
-  List six    = ['6a','6a+','6b','6b+','6c','6c+'];
-  List seven  = ['7a','7a+','7b','7b+','7c','7c+'];
-  List eight  = ['8a','8a+','8b','8b+','8c','8c+'];
-  List nine   = ['9a','9a+','9b','9b+','9c','9c+'];
-
-  if(six.contains(grade)) {           ret = 'vi';
-  } else if(seven.contains(grade)) {  ret = 'vii';
-  } else if(eight.contains(grade)) {  ret = 'viii';
-  } else if(nine.contains(grade)) {   ret = 'ix'; }
-
-  return ret;
-}
-
-Future<void> insertVia(grade) async {
-  int key                   = 0;
-  Map<String, Map> updates  = {};
-
-  if(!globals.vias.containsKey(grade)) { //ezpadauen gradue
-    updates[grade] = {};
-    updates[grade]?[key.toString()]   = globals.newBloc;
-
-    FirebaseDatabase.instance.ref('/vias/').update(updates);
-    globals.vias[grade] = [];
-    globals.vias[grade].add(globals.newBloc);
-  } else { //gradue badauen
-    key = globals.vias[grade].length;
-    updates[key.toString()]   = globals.newBloc;
-  
-    FirebaseDatabase.instance.ref('/vias/$grade/').update(updates);
-    globals.vias[grade].add(globals.newBloc);
-  }
-}
-
-Future<void> updateVia(grade, oldGrade) async {
-  if(oldGrade == grade) {
-    int index = globals.vias[grade].indexWhere((i) => i['id'] == globals.newBloc['id']);
-    globals.vias[grade][index] = globals.newBloc;
-
-    DatabaseReference ref = FirebaseDatabase.instance.ref("vias/$grade/$index");
-    await ref.set(globals.newBloc);
-  } else {
-    int index = globals.vias[oldGrade].indexWhere((i) => i['id'] == globals.newBloc['id']);
-    globals.vias[oldGrade].removeAt(index);
-    DatabaseReference ref = FirebaseDatabase.instance.ref("vias/$oldGrade");
-    await ref.set(globals.vias[oldGrade]);
-    insertVia(grade);
-  }
-}
-Future<void> deleteVia(grade) async {
-  int index = globals.vias[grade].indexWhere((i) => i['id'] == globals.newBloc['id']);
-  globals.vias[grade].removeAt(index);
-  DatabaseReference ref = FirebaseDatabase.instance.ref("vias/$grade");
-  await ref.set(globals.vias[grade]);
 }

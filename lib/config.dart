@@ -42,13 +42,16 @@ const colors = {
 
 const List<Map> viaTools = [
   {
-    "id": "done",
-    "label": "Eginda"
+    "id": "edit",
+    "label": "Edite"
   },{
-    "id": "project",
-    "label": "Proiekto"
+    "id": "delete",
+    "label": "Borra"
   },{
-    "id": "regrade",
-    "label": "Reakota"
+    "id": "show_user_vies",
+    "label": "<user>-n viek"
+  },{
+    "id": "show_grade_vies",
+    "label": "<user> graduko viek"
   }
 ];
