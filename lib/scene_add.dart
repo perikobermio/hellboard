@@ -5,7 +5,6 @@ import 'config.dart' as config;
 import 'globals.dart' as globals;
 import 'scene_select.dart' as sceneselect;
 import 'scene_panel.dart' as scenepanel;
-import 'package:firebase_database/firebase_database.dart';
 
 class SceneAdd extends StatefulWidget {
   final bool edit;

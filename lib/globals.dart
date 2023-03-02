@@ -11,14 +11,14 @@ Map<String, dynamic> users        = {};
 List<dynamic> panel40             = [];
 Map<String, dynamic> userfile     = {'user':'', 'data': {}, 'vias': {}};
 BluetoothConnection? connBT;
-Map<String, dynamic> newBloc      = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': ''};
+Map<String, dynamic> newBloc      = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': '', 'score': 0};
 
 Map userViasDone() {
   return users[userfile['user']]['vias'];
 }
 
 void clearNewBloc() {
-  newBloc = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': ''};
+  newBloc = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': '', 'score': 0};
 }
 
 void orderVias() {

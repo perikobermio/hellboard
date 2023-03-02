@@ -55,9 +55,12 @@ const List<Map> viaTools = [
     "label": "Borra"
   },{
     "id": "show_user_vies",
-    "label": "Egilien viek"
+    "label": "Egilien blokiek"
   },{
-    "id": "show_grade_vies",
-    "label": "Gradu bardineko viek"
+    "id": "show_user_done",
+    "label": "Egiliek iniko blokiek"
+  },{
+    "id": "score_vie",
+    "label": "Puntue"
   }
 ];

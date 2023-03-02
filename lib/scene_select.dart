@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'scene_add.dart' as sceneadd;
+import 'scene_user.dart' as sceneuser;
 import 'globals.dart' as globals;
 import 'config.dart' as config;
 import 'package:firebase_database/firebase_database.dart';
@@ -63,7 +64,11 @@ class _SceneSelectHome extends State<SceneSelectHome> {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: true)));
                       } else if(item == 'show_user_vies') {
                         setState(() {
-                          print('show_user_vies');
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => sceneuser.SceneUser(user: via['owner'], section: 1)));
+                        });
+                      } else if(item == 'show_user_done') {
+                        setState(() {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => sceneuser.SceneUser(user: via['owner'], section: 2)));
                         });
                       } else if(item == 'delete') {
                           showModalBottomSheet<void>(
