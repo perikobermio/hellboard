@@ -48,7 +48,30 @@ class _SceneSelectHome extends State<SceneSelectHome> {
             ListTile( 
               leading: Text(via['grade'], style: TextStyle(fontSize: 18, color: config.colors[via['grade']])),
               title: Text(via['name']),
-              subtitle: Text(globals.users[via['owner']]['label']),
+              subtitle: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    icon: const Icon(Icons.star),
+                    iconSize: 15,
+                    color: Color.fromARGB(255, 226, 226, 21),
+                    onPressed: () {
+                      print('rate');
+                    }
+                  ),
+                  SizedBox(
+                    width: 25,
+                    child: Text((via['rating'] != 0)? via['rating'].toString() : '--', style: TextStyle(fontSize: 13 ))
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 8),
+                    child: Text('|', style: TextStyle(fontSize: 13 ))
+                  ),
+                  Text(globals.users[via['owner']]['label'])
+                ]
+              ),
               trailing: Wrap(
                 children: <Widget>[
                   IconButton(
@@ -126,7 +149,7 @@ class _SceneSelectHome extends State<SceneSelectHome> {
                           builder: (BuildContext context) {
 
                             return StatefulBuilder(
-                              builder: (BuildContext context, setState) => Container(
+                              builder: (BuildContext context, localSetState) => Container(
                                 height: 200,
                                 color: Color.fromARGB(255, 25, 123, 64),
                                 child: Center(
@@ -148,7 +171,7 @@ class _SceneSelectHome extends State<SceneSelectHome> {
                                         divisions: 20,
                                         label: sliderValue.toInt().toString(),
                                         onChanged: (double value) {
-                                          setState(() {
+                                          localSetState(() {
                                             sliderValue = value;
                                           });
                                         },
@@ -172,7 +195,15 @@ class _SceneSelectHome extends State<SceneSelectHome> {
                                               globals.userViasRate()[viaId] = sliderValue;
                                               fa.set('users/$user/rating/$viaId', sliderValue);
 
-                                              Navigator.pop(context);
+                                              String grade   = globals.getGrade(via['grade']);
+                                              double overall = getOverallRate(via['id']);
+                                              
+                                              fa.set('blocs/$grade/$viaId/rating/', overall.toInt());
+
+                                              setState(() {
+                                                globals.vias[grade][via['id']]['rating'] = overall.toInt();
+                                                Navigator.pop(context);
+                                              });
                                             }
                                           )
                                         ]
@@ -287,4 +318,18 @@ class ViaActions {
     }
   }
 
+}
+
+double getOverallRate(id) {
+  double  sum     = 0;
+  double  users   = 0;
+
+  globals.users.forEach((user, v) {
+    if(v['rating'].containsKey(id)) {
+      users = users + 1;
+      sum   = sum + v['rating'][id];
+    }
+  });
+
+  return (users == 0)? -1 : sum/users;
 }

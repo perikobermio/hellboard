@@ -49,7 +49,7 @@ Future<void> preLoad() async {
 
   if(globals.vias.isEmpty) {
     await loadVias();
-    final watchVias = FirebaseDatabase.instance.ref("vias");
+    final watchVias = FirebaseDatabase.instance.ref("blocs");
     watchVias.onChildChanged.listen((event) {
       loadVias();
     });
