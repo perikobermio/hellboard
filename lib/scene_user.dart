@@ -20,7 +20,8 @@ class _SceneUser extends State<SceneUser> {
     List<Widget> items = [];
 
     globals.vias.forEach((k, g) => {
-      for(var via in g.where((i) => i['owner'] == widget.user)) {
+      
+      Map.fromEntries(g.entries.where((i) => i.value['owner'] == widget.user)).forEach((id, via) => {
         items.add(
           ListTile( 
               leading: Text(via['grade'], style: TextStyle(fontSize: 18, color: config.colors[via['grade']])),
@@ -36,7 +37,8 @@ class _SceneUser extends State<SceneUser> {
               }
           )
         )
-      }
+      })
+
     });
 
     return ExpansionTile(
@@ -48,10 +50,11 @@ class _SceneUser extends State<SceneUser> {
   }
 
   getViasDone() {
-    List<Widget> items = [];
+    List<Widget> items  = [];
+    Map<String, dynamic> dones = globals.users[widget.user]['vias'];
 
     globals.vias.forEach((k, g) => {
-      for(var via in g.where((i) => i['owner'] == widget.user)) {
+      Map.fromEntries(g.entries.where((i) => dones.containsKey(i.value['id']) )).forEach((id, via) => {
         items.add(
           ListTile( 
               leading: Text(via['grade'], style: TextStyle(fontSize: 18, color: config.colors[via['grade']])),
@@ -75,7 +78,7 @@ class _SceneUser extends State<SceneUser> {
               }
           )
         )
-      }
+      })
     });
 
     return ExpansionTile(

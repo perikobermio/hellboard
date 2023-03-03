@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const btAddress = 'C8:F0:9E:75:16:42';
-const viasFile  = 'https://hellboard-default-rtdb.firebaseio.com/vias.json';
+const viasFile  = 'https://hellboard-default-rtdb.firebaseio.com/blocs.json';
 const usersFile  = 'https://hellboard-default-rtdb.firebaseio.com/users.json';
 
 const List<Map<String, dynamic>> grades = [

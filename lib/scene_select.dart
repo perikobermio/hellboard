@@ -4,7 +4,6 @@ import 'scene_add.dart' as sceneadd;
 import 'scene_user.dart' as sceneuser;
 import 'globals.dart' as globals;
 import 'config.dart' as config;
-import 'package:firebase_database/firebase_database.dart';
 
 class SceneSelectHome extends StatefulWidget {
   SceneSelectHome();
@@ -36,10 +35,6 @@ class _SceneSelectHome extends State<SceneSelectHome> {
     Future<void> viaAction(action, via) async {
       if(action == 'done') {
         await vActions.setDone(via, globals.userfile);
-      } else if(action == 'project') {
-        await vActions.setProject(via, globals.userfile);
-      } else if(action == 'regrade') {
-        await vActions.regrade();
       }
     }
 
@@ -48,7 +43,7 @@ class _SceneSelectHome extends State<SceneSelectHome> {
     getDetail(grade) {
       List<Widget> items = [];
     
-      grade.forEach((via) => {
+      grade.forEach((id, via) => {
           items.add(
             ListTile( 
               leading: Text(via['grade'], style: TextStyle(fontSize: 18, color: config.colors[via['grade']])),
@@ -104,10 +99,12 @@ class _SceneSelectHome extends State<SceneSelectHome> {
                                           ElevatedButton(
                                             child: const Text('Bai'),
                                             onPressed: () {
-                                              globals.ViasActions va = globals.ViasActions();
-                                              String grade = globals.getGrade(via['grade']);
+                                              globals.FireActions fa  = globals.FireActions();
+                                              String grade            = globals.getGrade(via['grade']);
+                                              String viaId            = via['id'];
 
-                                              va.deleteVia(grade, via['id']).then((a) => setState(() {
+                                              fa.delete('blocs/$grade/$viaId').then((a) => setState(() {
+                                                globals.vias[grade].remove(viaId);
                                                 Navigator.pop(context);
                                               }));
                                             }
@@ -276,26 +273,18 @@ class _SceneSelectHome extends State<SceneSelectHome> {
 class ViaActions {
 
   Future<void> setDone(via, user) async {
+    globals.FireActions fa = globals.FireActions();
+
     String userid = user['user'];
     String viaid  = via['id'].toString();
 
-    DatabaseReference ref = FirebaseDatabase.instance.ref("users/$userid/vias/$viaid");
-    var a = await ref.get();
+    bool toggle = await fa.toggle("users/$userid/vias/$viaid");
 
-    if(a.value == null) {
-      await ref.set(true);
+    if(toggle == true) {
       globals.userfile['vias'][viaid] = true;
     } else {
-      await ref.remove();
       globals.userfile['vias'].remove(viaid);
     }
   }
 
-  Future<void> setProject(via, user) async {
-    print(globals.userfile);
-  }
-
-  Future<void> regrade() async {
-    print(globals.userfile);
-  }
 }

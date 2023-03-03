@@ -132,14 +132,14 @@ class _SceneAdd extends State<SceneAdd> {
                                             ElevatedButton(
                                               child: const Text('Bai'),
                                               onPressed: () {
-                                                globals.ViasActions va = globals.ViasActions();
-                                                String grade = globals.getGrade(globals.newBloc['grade']);
+                                                globals.FireActions fa  = globals.FireActions();
+                                                String grade            = globals.getGrade(globals.newBloc['grade']);
+                                                String viaId            = globals.newBloc['id'];
 
-                                                va.deleteVia(grade, globals.newBloc['id']);
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),
-                                                );
+                                                fa.delete('blocs/$grade/$viaId').then((a) => setState(() {
+                                                  globals.vias[grade].remove(viaId);
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()));
+                                                }));
                                               }
                                             )
                                           ]
@@ -156,22 +156,24 @@ class _SceneAdd extends State<SceneAdd> {
                       ],
                       ElevatedButton(
                         onPressed: () {
-                          globals.ViasActions va = globals.ViasActions();
-                          String grade = globals.getGrade(globals.newBloc['grade']);
+                          globals.FireActions fa  = globals.FireActions();
+                          String grade            = globals.getGrade(globals.newBloc['grade']);
+                          String viaId            = (widget.edit)? globals.newBloc['id'] : DateTime.now().millisecondsSinceEpoch.toString();
 
                           if(widget.edit) {
-                            oldGrade = globals.getGrade(oldGrade);
-                            va.updateVia(grade, oldGrade);
-                          } else {
-                            globals.newBloc['owner']  = globals.userfile['user'];
-                            globals.newBloc['id']     = DateTime.now().millisecondsSinceEpoch.toString();
-                            va.insertVia(grade);
+                            oldGrade  = globals.getGrade(oldGrade);
+                            if(oldGrade != grade) {
+                              fa.delete('blocs/$oldGrade/$viaId');
+                              globals.vias[oldGrade].remove(viaId);
+                            }
                           }
 
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),
-                          );
+                          globals.newBloc['owner']    = globals.userfile['user'];
+                          globals.newBloc['id']       = viaId;
+                          fa.set('blocs/$grade/$viaId', globals.newBloc);
+                          globals.vias[grade][viaId]  = (globals.newBloc);
+
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),);
 
                         },
                         child: const Text('Gorde'),

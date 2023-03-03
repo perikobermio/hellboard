@@ -26,10 +26,10 @@ void clearNewBloc() {
 }
 
 void orderVias() {
-  List<dynamic> temp = [];
+  Map<String, dynamic> temp = {};
   for(var grade in vias.keys) {
     temp = vias[grade];
-    temp.sort((a,b) => a['grade'].compareTo(b['grade']));
+    temp = Map.fromEntries(temp.entries.toList()..sort((a,b) => a.value['grade'].compareTo(b.value['grade'])));
     vias[grade] = temp;
   }
 }
@@ -82,58 +82,31 @@ String getGrade(String? grade) {
   return ret;
 }
 
-class ViasActions {
-
-  Future<void> insertVia(grade) async {
-    int key                   = 0;
-    Map<String, Map> updates  = {};
-
-    if(!vias.containsKey(grade)) { //ezpadauen gradue
-      updates[grade] = {};
-      updates[grade]?[key.toString()]   = newBloc;
-
-      FirebaseDatabase.instance.ref('/vias/').update(updates);
-      vias[grade] = [];
-      vias[grade].add(newBloc);
-    } else { //gradue badauen
-      key = vias[grade].length;
-      updates[key.toString()] = newBloc;
-    
-      FirebaseDatabase.instance.ref('/vias/$grade/').update(updates);
-      vias[grade].add(newBloc);
-    }
-  }
-
-  Future<void> updateVia(grade, oldGrade) async {
-    if(oldGrade == grade) {
-      int index = vias[grade].indexWhere((i) => i['id'] == newBloc['id']);
-      vias[grade][index] = newBloc;
-
-      DatabaseReference ref = FirebaseDatabase.instance.ref("vias/$grade/$index");
-      await ref.set(newBloc);
-    } else {
-      int index = vias[oldGrade].indexWhere((i) => i['id'] == newBloc['id']);
-      vias[oldGrade].removeAt(index);
-      DatabaseReference ref = FirebaseDatabase.instance.ref("vias/$oldGrade");
-      await ref.set(vias[oldGrade]);
-      insertVia(grade);
-    }
-  }
-  Future<void> deleteVia(grade, id) async {
-    int index = vias[grade].indexWhere((i) => i['id'] == id);
-    vias[grade].removeAt(index);
-    DatabaseReference ref = FirebaseDatabase.instance.ref("vias/$grade");
-    await ref.set(vias[grade]);
-  }
-}
-
-
-
 class FireActions {
 
   Future<void> set(path, value) async {
     DatabaseReference ref = FirebaseDatabase.instance.ref(path);
     await ref.set(value);
+  }
+
+  Future<void> delete(path) async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref(path);
+    await ref.remove();
+  }
+
+  Future<bool> toggle(path) async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref(path);
+    var a = await ref.get();
+    bool status;
+
+    if(a.value == null) {
+      await ref.set(true);
+      status = true;
+    } else {
+      await ref.remove();
+      status = false;
+    }
+    return status;
   }
 
 }
