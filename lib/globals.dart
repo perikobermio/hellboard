@@ -126,3 +126,14 @@ class ViasActions {
     await ref.set(vias[grade]);
   }
 }
+
+
+
+class FireActions {
+
+  Future<void> set(path, value) async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref(path);
+    await ref.set(value);
+  }
+
+}

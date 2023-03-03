@@ -152,8 +152,7 @@ class _SceneSelectHome extends State<SceneSelectHome> {
                                         label: sliderValue.toInt().toString(),
                                         onChanged: (double value) {
                                           setState(() {
-                                            sliderValue                       = value;
-                                            globals.userViasRate()[via['id']] = value;
+                                            sliderValue = value;
                                           });
                                         },
                                       ),
@@ -168,7 +167,15 @@ class _SceneSelectHome extends State<SceneSelectHome> {
                                           ElevatedButton(
                                             child: const Text('Gorde'),
                                             onPressed: () {
+                                              globals.FireActions fa = globals.FireActions();
+
+                                              String user   = globals.userfile['user'];
+                                              String viaId  = via['id'];
                                               
+                                              globals.userViasRate()[viaId] = sliderValue;
+                                              fa.set('users/$user/rating/$viaId', sliderValue);
+
+                                              Navigator.pop(context);
                                             }
                                           )
                                         ]
