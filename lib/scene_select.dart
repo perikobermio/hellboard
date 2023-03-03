@@ -23,6 +23,16 @@ class _SceneSelectHome extends State<SceneSelectHome> {
       return globals.connBT != null;
     }
 
+    double getRate(id) {
+      double ret = 0;
+
+      if(globals.userViasRate()[id] != null) {
+        ret = globals.userViasRate()[id].toDouble();
+      }
+
+      return ret;
+    }
+
     Future<void> viaAction(action, via) async {
       if(action == 'done') {
         await vActions.setDone(via, globals.userfile);
@@ -110,6 +120,66 @@ class _SceneSelectHome extends State<SceneSelectHome> {
                               );
                             },
                           );
+                      } else if(item == 'rate_vie') {
+
+                        double sliderValue = getRate(via['id']);
+
+                        showModalBottomSheet<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+
+                            return StatefulBuilder(
+                              builder: (BuildContext context, setState) => Container(
+                                height: 200,
+                                color: Color.fromARGB(255, 25, 123, 64),
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.star, color: Color.fromARGB(255, 255, 225, 1), size: 24.0, semanticLabel: 'Puntuazinue'),
+                                          Text(sliderValue.toInt().toString(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                        ]
+                                      ),
+                                      const Text('Ze puntuazio merezi dau blokiek?'),
+                                      Slider(
+                                        value: sliderValue,
+                                        max: 100,
+                                        divisions: 20,
+                                        label: sliderValue.toInt().toString(),
+                                        onChanged: (double value) {
+                                          setState(() {
+                                            sliderValue                       = value;
+                                            globals.userViasRate()[via['id']] = value;
+                                          });
+                                        },
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          ElevatedButton(
+                                            child: const Text('Atzera'),
+                                            onPressed: () => Navigator.pop(context),
+                                          ),
+                                          SizedBox(width: 10),
+                                          ElevatedButton(
+                                            child: const Text('Gorde'),
+                                            onPressed: () {
+                                              
+                                            }
+                                          )
+                                        ]
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            );
+                          },
+                        );
                       }
                     },
                     itemBuilder: (BuildContext context) {

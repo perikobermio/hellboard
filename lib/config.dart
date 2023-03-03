@@ -60,7 +60,7 @@ const List<Map> viaTools = [
     "id": "show_user_done",
     "label": "Egiliek iniko blokiek"
   },{
-    "id": "score_vie",
+    "id": "rate_vie",
     "label": "Puntue"
   }
 ];

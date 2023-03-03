@@ -26,13 +26,21 @@ class _SceneUser extends State<SceneUser> {
               leading: Text(via['grade'], style: TextStyle(fontSize: 18, color: config.colors[via['grade']])),
               title: Text(via['name']),
               subtitle: Text(via['description']),
+              onTap: () {
+                print('LOAD: BLOC');
+                String viavalue = via["value"];
+                String pitch = 'load:$viavalue';
+                
+                Uint8List uint8list = Uint8List.fromList(pitch.codeUnits);
+                globals.connBT?.output.add(uint8list);
+              }
           )
         )
       }
     });
 
     return ExpansionTile(
-      title: Text('Bloke danak', style: TextStyle(fontSize: 20)),
+      title: Text('Sortutako bloke danak', style: TextStyle(fontSize: 20)),
       initiallyExpanded: (widget.section == 1)? true : false,
       children: items
     );
@@ -71,7 +79,7 @@ class _SceneUser extends State<SceneUser> {
     });
 
     return ExpansionTile(
-      title: Text('Eginiko bloke danak', style: TextStyle(fontSize: 20)),
+      title: Text('Ataratako bloke danak', style: TextStyle(fontSize: 20)),
       initiallyExpanded: (widget.section == 2)? true : false,
       children: items
     );
