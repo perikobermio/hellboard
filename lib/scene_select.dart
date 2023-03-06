@@ -325,13 +325,13 @@ Color getRateColor(rate) {
   Color ret = Color.fromARGB(255, 160, 160, 160);
 
   if(rate > 20 && rate <= 50) {
-    ret = Color.fromARGB(255, 3, 190, 16);
+    ret = Color.fromARGB(255, 3, 143, 190);
   } else if(rate > 50 && rate <= 80) {
-    ret = Color.fromARGB(255, 49, 138, 255);
+    ret = Color.fromARGB(255, 33, 205, 14);
   } else if(rate > 80 && rate <= 90) {
     ret = Color.fromARGB(255, 255, 247, 14);
   } else if(rate > 90 && rate <= 95) {
-    ret = Color.fromARGB(255, 196, 95, 0);
+    ret = Color.fromARGB(255, 255, 123, 0);
   } else if(rate > 95) {
     ret = Color.fromARGB(255, 255, 0, 0);
   }
