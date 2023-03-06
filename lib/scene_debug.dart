@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
 import 'dart:core';
-import 'scene_add.dart' as sceneadd;
+import 'scene_select.dart' as sceneselect;
 import 'globals.dart' as globals;
-//import 'scene_add.dart' as scenepanel;
 
-class ScenePanel extends StatefulWidget {
-  final bool edit;
-  ScenePanel({required this.edit});
+class SceneDebug extends StatefulWidget {
+  SceneDebug();
 
   @override
-  State<ScenePanel> createState() => _ScenePanel();
+  State<SceneDebug> createState() => _SceneDebug();
 }
 
-class _ScenePanel extends State<ScenePanel> {
-  List<Map>     _points   = [];
-  bool          calculate = true;
+class _SceneDebug extends State<SceneDebug> {
+  List<Map>     _points       = [];
+  Map           currentCoords = {};
+  int           currentIndex  = 0;
 
   @override
   Widget build(BuildContext context) {
-    if(calculate && globals.newBloc['value'] != '') {
-      _points = setPoints();
-    }
+    _points = setPoints();
 
     return Scaffold(
       appBar: AppBar(
@@ -51,10 +48,7 @@ class _ScenePanel extends State<ScenePanel> {
 
               globals.newBloc['value'] = aValue.join('-');
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: widget.edit)),
-              );
+              Navigator.push(context,MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),);
             },
             backgroundColor: Color.fromARGB(255, 65, 154, 226),
             heroTag: null,
@@ -70,17 +64,15 @@ class _ScenePanel extends State<ScenePanel> {
           onTapUp: (TapUpDetails details) {
             RenderBox box = context.findRenderObject() as RenderBox;
             Offset global = box.localToGlobal(details.localPosition);
-            Map coords    = getRealCoords(global);
-            
-            print(global.dx);
-            print(global.dy);
+            currentCoords = getRealCoords(global);
+            currentIndex  = getCoordsIndex(currentCoords);
 
-            if(coords['x'] != 0) {
-              setState(() {
-                calculate = false;
-                _points.add(coords);
-              });
-            }
+            setState(() {
+              if(currentCoords['x'] != 0) {
+                print(currentCoords['led']);
+                print(currentIndex);
+              }
+            });
           },
           child: Stack(
             children: [
@@ -94,8 +86,24 @@ class _ScenePanel extends State<ScenePanel> {
                   decoration: BoxDecoration(
                     shape: BoxShape.rectangle,
                     border: Border.all(
-                      color:Color.fromARGB(255, 86, 240, 43),
-                      width: 1.0
+                      color: (point['led'] == currentCoords['led'])? Color.fromARGB(255, 255, 0, 0) : Color.fromARGB(255, 86, 240, 43),
+                      width: (point['led'] == currentCoords['led'])? 1.7 : 1
+                    ),
+                  ),
+                ),
+                ),
+              ),
+              ..._points.map((point) => Positioned(
+                left: point['rx'].toDouble(),
+                top: point['ry'].toDouble(),
+                child: Container(
+                  width: 2,
+                  height: 2,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    border: Border.all(
+                      color: (point['led'] == currentCoords['led'])? Color.fromARGB(255, 255, 0, 0) : Color.fromARGB(255, 86, 240, 43),
+                      width: (point['led'] == currentCoords['led'])? 1.7 : 1
                     ),
                   ),
                 ),
@@ -119,15 +127,17 @@ Map getRealCoords(coords) {
   return ret;
 }
 
+int getCoordsIndex(coords) {
+  return globals.panel40.indexWhere((i) => i['led'] == coords['led'] );
+}
+
 List<Map> setPoints() {
   List<Map>     p     = [];
   List<dynamic> point = [];
 
-  for(var led in globals.newBloc['value'].split('-') ) {
-    point = globals.panel40.where((i) => i['led'] == led).toList();
-    if(point.isNotEmpty) {
-      p.add(point[0]);
-    }
+  point = globals.panel40.toList();
+  for(var item in point) {
+    p.add(item);
   }
 
   return p;

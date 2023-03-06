@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'scene_add.dart' as sceneadd;
 import 'scene_user.dart' as sceneuser;
+import 'scene_debug.dart' as scenedebug;
 import 'globals.dart' as globals;
 import 'config.dart' as config;
 
@@ -264,8 +265,19 @@ class _SceneSelectHome extends State<SceneSelectHome> {
         title: Text('Hellboard'),
         automaticallyImplyLeading: false,
         actions: <Widget>[
+          if(globals.userfile['user'] == 'erik') 
+            Padding(
+              padding: EdgeInsets.only(right: 1.0),
+              child: IconButton(
+                icon: const Icon(Icons.adb),
+                tooltip: 'Admin',
+                onPressed: () {
+                  Navigator.push(context,MaterialPageRoute(builder: (context) => scenedebug.SceneDebug()));
+                },
+              )
+            ),
           Padding(
-            padding: EdgeInsets.only(right: 20.0),
+            padding: EdgeInsets.only(right: 1.0),
             child: IconButton(
               icon: const Icon(Icons.add),
               tooltip: 'Bloke barrije',
@@ -279,7 +291,7 @@ class _SceneSelectHome extends State<SceneSelectHome> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(right: 20.0),
+            padding: EdgeInsets.only(right: 5.0),
             child: IconButton(
               icon: isConnected() ? const Icon(Icons.bluetooth) : const Icon(Icons.bluetooth_disabled),
               tooltip: 'Konekzinue',
