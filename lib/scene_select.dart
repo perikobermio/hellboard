@@ -56,7 +56,7 @@ class _SceneSelectHome extends State<SceneSelectHome> {
                     constraints: BoxConstraints(),
                     icon: const Icon(Icons.star),
                     iconSize: 15,
-                    color: Color.fromARGB(255, 226, 226, 21),
+                    color: getRateColor(via['rating']),
                     onPressed: () {
                       print('rate');
                     }
@@ -319,6 +319,24 @@ class ViaActions {
     }
   }
 
+}
+
+Color getRateColor(rate) {
+  Color ret = Color.fromARGB(255, 160, 160, 160);
+
+  if(rate > 20 && rate <= 50) {
+    ret = Color.fromARGB(255, 3, 190, 16);
+  } else if(rate > 50 && rate <= 80) {
+    ret = Color.fromARGB(255, 49, 138, 255);
+  } else if(rate > 80 && rate <= 90) {
+    ret = Color.fromARGB(255, 255, 247, 14);
+  } else if(rate > 90 && rate <= 95) {
+    ret = Color.fromARGB(255, 196, 95, 0);
+  } else if(rate > 95) {
+    ret = Color.fromARGB(255, 255, 0, 0);
+  }
+
+  return ret;
 }
 
 double getOverallRate(id) {
