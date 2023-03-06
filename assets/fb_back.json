@@ -1,0 +1,251 @@
+{
+    "blocs": {
+      "v": {
+        "1677840529984": {
+          "description": "barrijena",
+          "grade": "V+",
+          "id": "1677840529984",
+          "name": "barrijena bai",
+          "owner": "urkidi",
+          "rating": 52,
+          "value": "154-133-075-042-052"
+        }
+      },
+      "vi": {
+        "1676449844770": {
+          "description": "ni makina",
+          "grade": "6c+",
+          "id": "1676449844770",
+          "name": "makina",
+          "owner": "maize",
+          "rating": 40,
+          "value": "014-022-000-002-004-005-043-042-135-141-131-123-074"
+        },
+        "1676984405164": {
+          "description": "ia ba",
+          "grade": "6b+",
+          "id": "1676984405164",
+          "name": "ia ba",
+          "owner": "erik",
+          "rating": 55,
+          "value": "054-045-052-021-074"
+        },
+        "1677491400213": {
+          "description": "istutu",
+          "grade": "6b",
+          "id": "1677491400213",
+          "name": "istutu",
+          "owner": "denis",
+          "rating": 75,
+          "value": "106-076-052-041-031-020"
+        },
+        "1677755794994": {
+          "description": "score",
+          "grade": "6a+",
+          "id": "1677755794994",
+          "name": "score",
+          "owner": "erik",
+          "rating": 25,
+          "value": "115-112-063-072-051-042-065-074-045-034-004-143-141-131-133-133"
+        }
+      },
+      "vii": {
+        "1676035514100": {
+          "description": "oso gogorra",
+          "grade": "7a",
+          "id": "1676035514100",
+          "name": "hercules",
+          "owner": "erik",
+          "rating": 80,
+          "value": "077-046-022-000-000-000"
+        },
+        "1677250745608": {
+          "description": "gogorra",
+          "grade": "7c+",
+          "id": "1677250745608",
+          "name": "a sako",
+          "owner": "erik",
+          "rating": 80,
+          "value": "131-116-052-005"
+        }
+      },
+      "viii": {
+        "1677486206210": {
+          "description": "a full",
+          "grade": "8a",
+          "id": "1677486206210",
+          "name": "a full",
+          "owner": "josu",
+          "rating": 82,
+          "value": "132-122-065-066-021"
+        }
+      }
+    },
+    "users": {
+      "aitzol": {
+        "label": "Aitzol Arrasate",
+        "rating": {
+          "not_remove": true
+        },
+        "vias": {
+          "not_remove": true
+        }
+      },
+      "armen": {
+        "label": "Aitzol Armendariz",
+        "rating": {
+          "not_remove": true
+        },
+        "vias": {
+          "not_remove": true
+        }
+      },
+      "asier": {
+        "label": "Asier Leioa",
+        "rating": {
+          "not_remove": true
+        },
+        "vias": {
+          "not_remove": true
+        }
+      },
+      "bittor": {
+        "label": "Bittor Rokoko",
+        "rating": {
+          "not_remove": true
+        },
+        "vias": {
+          "not_remove": true
+        }
+      },
+      "denis": {
+        "label": "Denis Oiartzun",
+        "rating": {
+          "not_remove": true
+        },
+        "vias": {
+          "not_remove": true
+        }
+      },
+      "eljoven": {
+        "label": "Gaizka Beitia",
+        "rating": {
+          "not_remove": true
+        },
+        "vias": {
+          "2": true,
+          "1676984405164": true,
+          "not_remove": true
+        }
+      },
+      "eneko": {
+        "label": "Eneko Varona",
+        "rating": {
+          "not_remove": true
+        },
+        "vias": {
+          "not_remove": true
+        }
+      },
+      "erik": {
+        "label": "Erik Basañez",
+        "rating": {
+          "1676035514100": 80,
+          "1676449844770": 40,
+          "1676984405164": 70,
+          "1676993176127": 35,
+          "1676993176128": 70,
+          "1677250745608": 80,
+          "1677486206210": 75,
+          "1677491400213": 75,
+          "1677755794994": 25,
+          "1677840529984": 20,
+          "not_remove": true
+        },
+        "vias": {
+          "2": true,
+          "3": true,
+          "1676449844770": true,
+          "1676984405164": true,
+          "1677149440807": true,
+          "1677490523089": true,
+          "1677491400213": true,
+          "1677755794994": true,
+          "1677840529984": true,
+          "not_remove": true
+        }
+      },
+      "gotzon": {
+        "label": "Gotzon Unanue",
+        "rating": {
+          "not_remove": true
+        },
+        "vias": {
+          "not_remove": true
+        }
+      },
+      "joseba": {
+        "label": "Joseba Kranpones",
+        "rating": {
+          "not_remove": true
+        },
+        "vias": {
+          "1676993176127": true,
+          "not_remove": true
+        }
+      },
+      "josu": {
+        "label": "Josu Otaola",
+        "rating": {
+          "not_remove": true
+        },
+        "vias": {
+          "not_remove": true
+        }
+      },
+      "maize": {
+        "label": "Gaizka Ortega",
+        "rating": {
+          "1677486206210": 90,
+          "not_remove": true
+        },
+        "vias": {
+          "1677486206210": true,
+          "1677755794994": true,
+          "not_remove": true
+        }
+      },
+      "peio": {
+        "label": "Peio Mundaka",
+        "rating": {
+          "not_remove": true
+        },
+        "vias": {
+          "not_remove": true
+        }
+      },
+      "portu": {
+        "label": "Ander Portuondo",
+        "rating": {
+          "not_remove": true
+        },
+        "vias": {
+          "1677490523089": true,
+          "not_remove": true
+        }
+      },
+      "urkidi": {
+        "label": "Unai Urkidi",
+        "rating": {
+          "1676984405164": 40,
+          "1677840529984": 85,
+          "not_remove": true
+        },
+        "vias": {
+          "1677491400213": true,
+          "1677840529984": true,
+          "not_remove": true
+        }
+      }
+    }
+  }

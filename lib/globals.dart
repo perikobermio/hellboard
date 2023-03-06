@@ -28,8 +28,8 @@ void clearNewBloc() {
 void orderVias() {
   Map<String, dynamic> temp = {};
   for(var grade in vias.keys) {
-    temp = vias[grade];
-    temp = Map.fromEntries(temp.entries.toList()..sort((a,b) => a.value['grade'].compareTo(b.value['grade'])));
+    temp        = vias[grade];
+    temp        = Map.fromEntries(temp.entries.toList()..sort((a,b) => a.value['grade'].compareTo(b.value['grade'])));
     vias[grade] = temp;
   }
 }
@@ -38,7 +38,7 @@ class UserFile {
 
   Future<File> get _personalFile async {
     final directory = await getApplicationDocumentsDirectory();
-    final path = directory.path;
+    final path      = directory.path;
     return File('$path/personal.json');
   }
 
@@ -77,9 +77,20 @@ String getGrade(String? grade) {
   if(six.contains(grade)) {           ret = 'vi';
   } else if(seven.contains(grade)) {  ret = 'vii';
   } else if(eight.contains(grade)) {  ret = 'viii';
-  } else if(nine.contains(grade)) {   ret = 'ix'; }
+  } else if(nine.contains(grade)) {   ret = 'viiii'; }
 
   return ret;
+}
+
+Future<void> cleanBloc(key) async {
+  FireActions fa  = FireActions();
+
+  delete(user,v) {
+    fa.delete('users/$user/rating/$key');
+    fa.delete('users/$user/vias/$key');
+  }
+
+  users.forEach((k,v) => delete(k,v));
 }
 
 class FireActions {
@@ -107,6 +118,6 @@ class FireActions {
       status = false;
     }
     return status;
-  }
+  }  
 
 }

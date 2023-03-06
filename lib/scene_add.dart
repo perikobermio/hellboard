@@ -138,6 +138,7 @@ class _SceneAdd extends State<SceneAdd> {
 
                                                 fa.delete('blocs/$grade/$viaId').then((a) => setState(() {
                                                   globals.vias[grade].remove(viaId);
+                                                  globals.cleanBloc(viaId);
                                                   Navigator.push(context, MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()));
                                                 }));
                                               }
@@ -171,7 +172,12 @@ class _SceneAdd extends State<SceneAdd> {
                           globals.newBloc['owner']    = globals.userfile['user'];
                           globals.newBloc['id']       = viaId;
                           fa.set('blocs/$grade/$viaId', globals.newBloc);
-                          globals.vias[grade][viaId]  = (globals.newBloc);
+
+                          if(!globals.vias.containsKey(grade)) {
+                            globals.vias[grade] = {grade: globals.newBloc};
+                          } else {
+                            globals.vias[grade][viaId]  = globals.newBloc;
+                          }
 
                           Navigator.push(context,MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),);
 

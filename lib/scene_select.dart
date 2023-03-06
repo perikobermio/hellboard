@@ -128,6 +128,7 @@ class _SceneSelectHome extends State<SceneSelectHome> {
 
                                               fa.delete('blocs/$grade/$viaId').then((a) => setState(() {
                                                 globals.vias[grade].remove(viaId);
+                                                globals.cleanBloc(viaId);
                                                 Navigator.pop(context);
                                               }));
                                             }
