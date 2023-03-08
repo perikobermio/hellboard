@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'dart:core';
+import 'dart:math';
 import 'scene_select.dart' as sceneselect;
 import 'globals.dart' as globals;
 
+
+const Map sizes = {
+  'xs':   {'w': 15, 'y': 15},
+  's':    {'w': 18, 'y': 18},
+  'm':    {'w': 22, 'y': 22},
+  'l':    {'w': 25, 'y': 25},
+  'xl':   {'w': 30, 'y': 30}
+};
+Map currentSize = sizes['xs'];
 class SceneDebug extends StatefulWidget {
   SceneDebug();
 
@@ -13,7 +23,7 @@ class SceneDebug extends StatefulWidget {
 class _SceneDebug extends State<SceneDebug> {
   List<Map>     _points       = [];
   Map           currentCoords = {'x': 0, 'y': 0, 'w': 0, 'h': 0, 'rx': 0, 'ry': 0, 'led': '---'};
-  int           currentIndex  = 0;
+  int           currentIndex  = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +50,9 @@ class _SceneDebug extends State<SceneDebug> {
           FloatingActionButton(
             onPressed: () {
               setState(() {
+                if(currentIndex != -1) {
+                  globals.panel40.removeAt(currentIndex);
+                }
                 currentCoords = {'x': 0, 'y': 0, 'w': 0, 'h': 0, 'rx': 0, 'ry': 0, 'led': '---'};
               });
             },
@@ -235,17 +248,7 @@ class _SceneDebug extends State<SceneDebug> {
                   ..._points.map((point) => Positioned(
                     left: point['rx'].toDouble(),
                     top: point['ry'].toDouble(),
-                    child: Container(
-                      width: 2,
-                      height: 2,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        border: Border.all(
-                          color: (point['led'] == currentCoords['led'])? Color.fromARGB(255, 255, 0, 0) : Color.fromARGB(255, 86, 240, 43),
-                          width: (point['led'] == currentCoords['led'])? 1.7 : 1
-                        ),
-                      ),
-                    ),
+                    child: Text(point['led'], style: TextStyle(fontSize: 6, color: (point['led'] == currentCoords['led'])? Color.fromARGB(255, 255, 0, 0) : Color.fromARGB(255, 86, 240, 43))),
                     ),
                   ),
                   if(isNew(currentCoords['led']))
@@ -275,7 +278,7 @@ class _SceneDebug extends State<SceneDebug> {
 }
 
 Map getRealCoords(coords) {
-  Map ret = {'x': coords.dx.toInt() - 10, 'y': coords.dy.toInt() - 10, 'w': 22, 'h': 22, 'rx': coords.dx.toInt(), 'ry': coords.dy.toInt(), 'led': '---'};
+  Map ret = {'x': coords.dx.toInt() - 7, 'y': coords.dy.toInt() - 7, 'w': 15, 'h': 15, 'rx': coords.dx.toInt(), 'ry': coords.dy.toInt(), 'led': '---'};
   List<dynamic> point =  globals.panel40.where((i) => i['x'] < coords.dx && coords.dx < i['x'] + i['w'] && i['y'] < coords.dy && coords.dy < i['y'] + i['h']).toList();
   if(point.isNotEmpty) {
     ret = point[0];
@@ -293,12 +296,18 @@ String getNextLed() {
     leds.add(int.tryParse(item['led']) ?? 0);
   }
 
-  int ret     = leds[leds.length-1] + 1;
-  String rets = ret.toString();
+  int lastLed     = leds.reduce(max);
+  int currentLed  = lastLed + 1;
 
-  if(ret.bitLength == 4) {
+  while (currentLed.toString().contains('8') || currentLed.toString().contains('9')) {
+    currentLed++;
+  }
+
+  String rets = currentLed.toString();
+
+  if(currentLed.bitLength == 4) {
     return '0$rets';
-  } else if(ret.bitLength < 4) {
+  } else if(currentLed.bitLength < 4) {
     return '00$rets';
   }
   return rets;
