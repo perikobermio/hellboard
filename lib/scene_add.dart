@@ -179,7 +179,7 @@ class _SceneAdd extends State<SceneAdd> {
                             globals.vias[grade][viaId]  = globals.newBloc;
                           }
 
-                          Navigator.push(context,MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),);
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()));
 
                         },
                         child: const Text('Gorde'),
