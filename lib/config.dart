@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-const btAddress = 'C8:F0:9E:75:16:42';
-const viasFile  = 'https://hellboard-default-rtdb.firebaseio.com/blocs.json';
-const usersFile  = 'https://hellboard-default-rtdb.firebaseio.com/users.json';
+const btAddress   = 'C8:F0:9E:75:16:42';
+const viasFile    = 'https://hellboard-default-rtdb.firebaseio.com/blocs.json';
+const usersFile   = 'https://hellboard-default-rtdb.firebaseio.com/users.json';
+const panel40     = 'https://hellboard-default-rtdb.firebaseio.com/panel40.json';
 
 const List<Map<String, dynamic>> grades = [
   {'value': '-',    'label': '-'},    {'value': 'V',    'label': 'V'},    {'value': 'V+',    'label': 'V+'},

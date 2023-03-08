@@ -12,7 +12,7 @@ class SceneDebug extends StatefulWidget {
 
 class _SceneDebug extends State<SceneDebug> {
   List<Map>     _points       = [];
-  Map           currentCoords = {};
+  Map           currentCoords = {'x': 0, 'y': 0, 'w': 0, 'h': 0, 'rx': 0, 'ry': 0, 'led': '---'};
   int           currentIndex  = 0;
 
   @override
@@ -28,107 +28,295 @@ class _SceneDebug extends State<SceneDebug> {
         children: [
           FloatingActionButton(
             onPressed: () {
-              setState(() {
-                globals.newBloc['value'] = '';
-                _points = [];
-              });
-            },
-            backgroundColor: Color.fromARGB(255, 113, 194, 139),
-            heroTag: null,
-            child: const Icon(Icons.remove),
-          ),
-          SizedBox(width: 10),
-          FloatingActionButton(
-            onPressed: () {
-              List aValue = [];
+              globals.FireActions fa  = globals.FireActions();
+              fa.set('panel40', globals.panel40);
 
-              for(var i=0;i<_points.length;i++) {
-                  aValue.add(_points[i]['led']);
-              }
-
-              globals.newBloc['value'] = aValue.join('-');
-
-              Navigator.push(context,MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),);
+              Navigator.push(context,MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()));
             },
             backgroundColor: Color.fromARGB(255, 65, 154, 226),
             heroTag: null,
             child: const Icon(Icons.save),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                currentCoords = {'x': 0, 'y': 0, 'w': 0, 'h': 0, 'rx': 0, 'ry': 0, 'led': '---'};
+              });
+            },
+            backgroundColor: Color.fromARGB(255, 16, 214, 19),
+            heroTag: null,
+            child: const Icon(Icons.remove),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              if(validate(currentCoords['led'])) {
+                if(isNew(currentCoords['led'])) {
+                  globals.panel40.add(currentCoords);
+                } else {
+                  globals.panel40[currentIndex] = currentCoords;
+                }
+              } else {
+                print('NO VALIDATE');
+              }
+              setState(() {
+                currentCoords = {'x': 0, 'y': 0, 'w': 0, 'h': 0, 'rx': 0, 'ry': 0, 'led': '---'};
+              });
+            },
+            backgroundColor: Color.fromARGB(255, 222, 234, 243),
+            heroTag: null,
+            child: const Icon(Icons.add),
           )          
         ]
       ),
-      body: InteractiveViewer(
-        boundaryMargin: const EdgeInsets.all(5.0),
-        minScale: 0.2,
-        maxScale: 4,
-        child: GestureDetector(
-          onTapUp: (TapUpDetails details) {
-            RenderBox box = context.findRenderObject() as RenderBox;
-            Offset global = box.localToGlobal(details.localPosition);
-            currentCoords = getRealCoords(global);
-            currentIndex  = getCoordsIndex(currentCoords);
-
-            setState(() {
-              if(currentCoords['x'] != 0) {
-                print(currentCoords['led']);
-                print(currentIndex);
-              }
-            });
-          },
-          child: Stack(
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Image.asset('assets/img/panel40.png'),
-              ..._points.map((point) => Positioned(
-                left: point['x'].toDouble(),
-                top:  point['y'].toDouble(),
-                child: Container(
-                  width: point['w'].toDouble(),
-                  height: point['h'].toDouble(),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    border: Border.all(
-                      color: (point['led'] == currentCoords['led'])? Color.fromARGB(255, 255, 0, 0) : Color.fromARGB(255, 86, 240, 43),
-                      width: (point['led'] == currentCoords['led'])? 1.7 : 1
+              Expanded(
+                child:
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'X-px',
                     ),
-                  ),
-                ),
-                ),
+                    style:TextStyle(fontSize:10),
+                    keyboardType: TextInputType.number,
+                    controller: TextEditingController()..text = currentCoords['x']!.toString(),
+                    onSubmitted: (val) {
+                      setState(() {
+                        currentCoords['x'] = int.tryParse(val) ?? 0;
+                      });
+                    },
+                  )
               ),
-              ..._points.map((point) => Positioned(
-                left: point['rx'].toDouble(),
-                top: point['ry'].toDouble(),
-                child: Container(
-                  width: 2,
-                  height: 2,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    border: Border.all(
-                      color: (point['led'] == currentCoords['led'])? Color.fromARGB(255, 255, 0, 0) : Color.fromARGB(255, 86, 240, 43),
-                      width: (point['led'] == currentCoords['led'])? 1.7 : 1
+              Expanded(
+                child:
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Y-px',
                     ),
-                  ),
-                ),
-                )
+                    style:TextStyle(fontSize:10),
+                    keyboardType: TextInputType.number,
+                    controller: TextEditingController()..text = currentCoords['y']!.toString(),
+                    onSubmitted: (val) {
+                      setState(() {
+                        currentCoords['y'] = int.tryParse(val) ?? 0;
+                      });
+                    },
+                  )
+              ),
+              Expanded(
+                child:
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'W-px',
+                    ),
+                    style:TextStyle(fontSize:10),
+                    keyboardType: TextInputType.number,
+                    controller: TextEditingController()..text = currentCoords['w']!.toString(),
+                    onSubmitted: (val) {
+                      setState(() {
+                        currentCoords['w'] = int.tryParse(val) ?? 0;
+                      });
+                    },
+                  )
+              ),
+              Expanded(
+                child:
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'H-px',
+                    ),
+                    style:TextStyle(fontSize:10),
+                    keyboardType: TextInputType.number,
+                    controller: TextEditingController()..text = currentCoords['h']!.toString(),
+                    onSubmitted: (val) {
+                      setState(() {
+                        currentCoords['h'] = int.tryParse(val) ?? 0;
+                      });
+                    },
+                  )
+              ),
+              Expanded(
+                child:
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'RX-px',
+                    ),
+                    style:TextStyle(fontSize:10),
+                    keyboardType: TextInputType.number,
+                    controller: TextEditingController()..text = currentCoords['rx']!.toString(),
+                    onSubmitted: (val) {
+                      setState(() {
+                        currentCoords['rx'] = int.tryParse(val) ?? 0;
+                      });
+                    },
+                  )
+              ),
+              Expanded(
+                child:
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'RY-px',
+                    ),
+                    style:TextStyle(fontSize:10),
+                    keyboardType: TextInputType.number,
+                    controller: TextEditingController()..text = currentCoords['ry']!.toString(),
+                    onSubmitted: (val) {
+                      setState(() {
+                        currentCoords['ry'] = int.tryParse(val) ?? 0;
+                      });
+                    },
+                  )
+              ),
+              Expanded(
+                child:
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'LED',
+                    ),
+                    style:TextStyle(fontSize:10),
+                    keyboardType: TextInputType.number,
+                    controller: TextEditingController()..text = currentCoords['led']!.toString(),
+                    onSubmitted: (val) {
+                      setState(() {
+                        currentCoords['led'] = val;
+                      });
+                    },
+                  )
               )
             ]
+          ),
+          InteractiveViewer(
+            boundaryMargin: const EdgeInsets.all(5.0),
+            minScale: 0.2,
+            maxScale: 4,
+            child: GestureDetector(
+              onTapUp: (TapUpDetails details) {
+                RenderBox box = context.findRenderObject() as RenderBox;
+                Offset global = box.localToGlobal(details.localPosition);
+                currentCoords = getRealCoords(global);
+                currentIndex  = getCoordsIndex(currentCoords);
+
+                setState(() {
+                  if(currentIndex == -1) {
+                    print('NEW');
+                  } else {
+                    print('EDIT');
+                  }
+                });
+              },
+              child: Stack(
+                children: [
+                  Image.asset('assets/img/panel40.png'),
+                  ..._points.map((point) => Positioned(
+                    left: point['x'].toDouble(),
+                    top:  point['y'].toDouble(),
+                    child: Container(
+                      width: point['w'].toDouble(),
+                      height: point['h'].toDouble(),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        border: Border.all(
+                          color: (point['led'] == currentCoords['led'])? Color.fromARGB(255, 255, 0, 0) : Color.fromARGB(255, 86, 240, 43),
+                          width: (point['led'] == currentCoords['led'])? 1.7 : 1
+                        ),
+                      ),
+                    ),
+                    ),
+                  ),
+                  ..._points.map((point) => Positioned(
+                    left: point['rx'].toDouble(),
+                    top: point['ry'].toDouble(),
+                    child: Container(
+                      width: 2,
+                      height: 2,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        border: Border.all(
+                          color: (point['led'] == currentCoords['led'])? Color.fromARGB(255, 255, 0, 0) : Color.fromARGB(255, 86, 240, 43),
+                          width: (point['led'] == currentCoords['led'])? 1.7 : 1
+                        ),
+                      ),
+                    ),
+                    ),
+                  ),
+                  if(isNew(currentCoords['led']))
+                    Positioned(
+                      left: currentCoords['x']?.toDouble(),
+                      top: currentCoords['y']?.toDouble(),
+                      child: Container(
+                        width: currentCoords['w'].toDouble(),
+                        height: currentCoords['h'].toDouble(),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          border: Border.all(
+                            color: Color.fromARGB(255, 7, 123, 255),
+                            width: 1.7
+                          ),
+                        ),
+                      ),
+                    )
+                ]
+              )
+            ),
           )
-        ),
+        ]
       )
     );
   }
 }
 
 Map getRealCoords(coords) {
-  Map ret = {'x': 0};
+  Map ret = {'x': coords.dx.toInt() - 10, 'y': coords.dy.toInt() - 10, 'w': 22, 'h': 22, 'rx': coords.dx.toInt(), 'ry': coords.dy.toInt(), 'led': '---'};
   List<dynamic> point =  globals.panel40.where((i) => i['x'] < coords.dx && coords.dx < i['x'] + i['w'] && i['y'] < coords.dy && coords.dy < i['y'] + i['h']).toList();
   if(point.isNotEmpty) {
     ret = point[0];
+  } else {
+    ret['led'] = getNextLed();
   }
 
   return ret;
 }
 
+String getNextLed() {
+  List<int> leds = [];
+
+  for(var item in globals.panel40) {
+    leds.add(int.tryParse(item['led']) ?? 0);
+  }
+
+  int ret     = leds[leds.length-1] + 1;
+  String rets = ret.toString();
+
+  if(ret.bitLength == 4) {
+    return '0$rets';
+  } else if(ret.bitLength < 4) {
+    return '00$rets';
+  }
+  return rets;
+}
+
 int getCoordsIndex(coords) {
   return globals.panel40.indexWhere((i) => i['led'] == coords['led'] );
+}
+
+bool isNew(led) {
+  return (globals.panel40.where((i) => i['led'] == led).toList().isEmpty);
+}
+
+bool validate(led) {
+  return (
+    globals.panel40.where((i) => i['led'] == led).toList().isEmpty &&
+    led != '' && led != '---' && led.length == 3
+  );
 }
 
 List<Map> setPoints() {

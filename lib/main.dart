@@ -64,8 +64,9 @@ Future<void> preLoad() async {
   }
 
   if(globals.panel40.isEmpty) {
-    final String response = await rootBundle.loadString('assets/panel40.json');
-    globals.panel40       = jsonDecode(response);
+    final httpPackageUrl = Uri.parse(config.panel40);
+    final promiseUsers   = await http.read(httpPackageUrl);
+    globals.panel40      = jsonDecode(promiseUsers);
   }
 
   final userfile = globals.UserFile();
