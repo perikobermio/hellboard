@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'dart:typed_data';
 import 'scene_add.dart' as sceneadd;
 import 'scene_user.dart' as sceneuser;
@@ -296,7 +297,11 @@ class _SceneSelectHome extends State<SceneSelectHome> {
               icon: isConnected() ? const Icon(Icons.bluetooth) : const Icon(Icons.bluetooth_disabled),
               tooltip: 'Konekzinue',
               onPressed: () {
-                print('BT: trying to connect');
+                setState(() {
+                  connectBT().then((snackBar) => {
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar)
+                  });
+                });
               },
             ),
           ),
@@ -363,4 +368,44 @@ double getOverallRate(id) {
   });
 
   return (users == 0)? -1 : sum/users;
+}
+
+Future<SnackBar> connectBT() async {
+  int ret     = await _connectBT();
+  String str  = 'HELLBOARD';
+
+  if(ret == 1) {
+    str = 'HELLBOARD-era konekta zara';
+  } else if(ret == 2) {
+    str = 'ERROR: Seguru zauz HELLBOARD-a konektata dauela?';
+  } else if(ret == 3) {
+    str = 'HELLBOARD deskonektata';
+  }
+
+  final snackBar = SnackBar(
+    content: Text(str),
+    action: SnackBarAction(
+      label: 'OK',
+      onPressed: () {}
+    )
+  );
+
+  return snackBar;
+}
+
+Future<int> _connectBT() async {
+  int ret = 0;
+  if(globals.connBT == null) {
+    await BluetoothConnection.toAddress(config.btAddress).then((conn) {
+      globals.connBT = conn;
+      ret = 1;
+    }).catchError((e) {
+      ret = 2;
+    });
+  } else {
+    await globals.connBT?.close();
+    globals.connBT = null;
+    ret = 3;
+  }
+  return ret;
 }
