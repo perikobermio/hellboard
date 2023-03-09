@@ -207,69 +207,73 @@ class _SceneDebug extends State<SceneDebug> {
               )
             ]
           ),
-          InteractiveViewer(
-            boundaryMargin: const EdgeInsets.all(5.0),
-            minScale: 0.2,
-            maxScale: 4,
-            child: GestureDetector(
-              onTapUp: (TapUpDetails details) {
-                RenderBox box = context.findRenderObject() as RenderBox;
-                Offset global = box.localToGlobal(details.localPosition);
-                currentCoords = getRealCoords(global);
-                currentIndex  = getCoordsIndex(currentCoords);
+          SizedBox(
+            width: 360,
+            height: 740,
+            child: InteractiveViewer(
+              boundaryMargin: const EdgeInsets.all(5.0),
+              minScale: 0.2,
+              maxScale: 4,
+              child: GestureDetector(
+                onTapUp: (TapUpDetails details) {
+                  RenderBox box = context.findRenderObject() as RenderBox;
+                  Offset global = box.localToGlobal(details.localPosition);
+                  currentCoords = getRealCoords(global);
+                  currentIndex  = getCoordsIndex(currentCoords);
 
-                setState(() {
-                  if(currentIndex == -1) {
-                    print('NEW');
-                  } else {
-                    print('EDIT');
-                  }
-                });
-              },
-              child: Stack(
-                children: [
-                  Image.asset('assets/img/panel40.png'),
-                  ..._points.map((point) => Positioned(
-                    left: point['x'].toDouble(),
-                    top:  point['y'].toDouble(),
-                    child: Container(
-                      width: point['w'].toDouble(),
-                      height: point['h'].toDouble(),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        border: Border.all(
-                          color: (point['led'] == currentCoords['led'])? Color.fromARGB(255, 255, 0, 0) : Color.fromARGB(255, 86, 240, 43),
-                          width: (point['led'] == currentCoords['led'])? 1.7 : 1
-                        ),
-                      ),
-                    ),
-                    ),
-                  ),
-                  ..._points.map((point) => Positioned(
-                    left: point['rx'].toDouble(),
-                    top: point['ry'].toDouble(),
-                    child: Text(point['led'], style: TextStyle(fontSize: 6, color: (point['led'] == currentCoords['led'])? Color.fromARGB(255, 255, 0, 0) : Color.fromARGB(255, 86, 240, 43))),
-                    ),
-                  ),
-                  if(isNew(currentCoords['led']))
-                    Positioned(
-                      left: currentCoords['x']?.toDouble(),
-                      top: currentCoords['y']?.toDouble(),
+                  setState(() {
+                    if(currentIndex == -1) {
+                      print('NEW');
+                    } else {
+                      print('EDIT');
+                    }
+                  });
+                },
+                child: Stack(
+                  children: [
+                    Image.asset('assets/img/panel40.png'),
+                    ..._points.map((point) => Positioned(
+                      left: point['x'].toDouble(),
+                      top:  point['y'].toDouble(),
                       child: Container(
-                        width: currentCoords['w'].toDouble(),
-                        height: currentCoords['h'].toDouble(),
+                        width: point['w'].toDouble(),
+                        height: point['h'].toDouble(),
                         decoration: BoxDecoration(
                           shape: BoxShape.rectangle,
                           border: Border.all(
-                            color: Color.fromARGB(255, 7, 123, 255),
-                            width: 1.7
+                            color: (point['led'] == currentCoords['led'])? Color.fromARGB(255, 255, 0, 0) : Color.fromARGB(255, 86, 240, 43),
+                            width: (point['led'] == currentCoords['led'])? 1.7 : 1
                           ),
                         ),
                       ),
-                    )
-                ]
+                      ),
+                    ),
+                    ..._points.map((point) => Positioned(
+                      left: point['rx'].toDouble(),
+                      top: point['ry'].toDouble(),
+                      child: Text(point['led'], style: TextStyle(fontSize: 6, color: (point['led'] == currentCoords['led'])? Color.fromARGB(255, 255, 0, 0) : Color.fromARGB(255, 86, 240, 43))),
+                      ),
+                    ),
+                    if(isNew(currentCoords['led']))
+                      Positioned(
+                        left: currentCoords['x']?.toDouble(),
+                        top: currentCoords['y']?.toDouble(),
+                        child: Container(
+                          width: currentCoords['w'].toDouble(),
+                          height: currentCoords['h'].toDouble(),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            border: Border.all(
+                              color: Color.fromARGB(255, 7, 123, 255),
+                              width: 1.7
+                            ),
+                          ),
+                        ),
+                      )
+                    ]
+                  )
+                ),
               )
-            ),
           )
         ]
       )

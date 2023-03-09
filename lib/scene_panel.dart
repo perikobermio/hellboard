@@ -62,49 +62,52 @@ class _ScenePanel extends State<ScenePanel> {
           )          
         ]
       ),
-      body: InteractiveViewer(
-        boundaryMargin: const EdgeInsets.all(5.0),
-        minScale: 0.2,
-        maxScale: 4,
-        child: GestureDetector(
-          onTapUp: (TapUpDetails details) {
-            RenderBox box = context.findRenderObject() as RenderBox;
-            Offset global = box.localToGlobal(details.localPosition);
-            Map coords    = getRealCoords(global);
-            
-            print(global.dx);
-            print(global.dy);
+      body: SizedBox(
+        width: 360,
+        height: 740,
+        child: InteractiveViewer(
+          boundaryMargin: const EdgeInsets.all(5.0),
+          minScale: 0.2,
+          maxScale: 4,
+          child: GestureDetector(
+            onTapUp: (TapUpDetails details) {
+              RenderBox box = context.findRenderObject() as RenderBox;
+              Offset global = box.localToGlobal(details.localPosition);
+              Map coords    = getRealCoords(global);
 
-            if(coords['x'] != 0) {
-              setState(() {
-                calculate = false;
-                _points.add(coords);
-              });
-            }
-          },
-          child: Stack(
-            children: [
-              Image.asset('assets/img/panel40.png'),
-              ..._points.map((point) => Positioned(
-                left: point['x'].toDouble(),
-                top:  point['y'].toDouble(),
-                child: Container(
-                  width: point['w'].toDouble(),
-                  height: point['h'].toDouble(),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    border: Border.all(
-                      color:Color.fromARGB(255, 86, 240, 43),
-                      width: 1.0
+              if(coords['x'] != 0) {
+                setState(() {
+                  calculate = false;
+                  _points.add(coords);
+                });
+              }
+            },
+            child: Stack(
+              children: [
+                Image.asset('assets/img/panel40.png'),
+                ..._points.map((point) => Positioned(
+                  left: point['x'].toDouble(),
+                  top:  point['y'].toDouble(),
+                  child: Container(
+                    width: point['w'].toDouble(),
+                    height: point['h'].toDouble(),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      border: Border.all(
+                        color:Color.fromARGB(255, 86, 240, 43),
+                        width: 1.0
+                      ),
                     ),
                   ),
-                ),
+                  )
                 )
-              )
-            ]
-          )
-        ),
+              ]
+            )
+          ),
+        )
+
       )
+      
     );
   }
 }
