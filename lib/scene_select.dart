@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'dart:typed_data';
+import 'scene_panel.dart' as scenepanel;
 import 'scene_add.dart' as sceneadd;
 import 'scene_user.dart' as sceneuser;
 import 'scene_debug.dart' as scenedebug;
@@ -232,12 +233,17 @@ class _SceneSelectHome extends State<SceneSelectHome> {
                 ],
               ),
               onTap: () {
-                print('LOAD: BLOC');
-                String viavalue = via["value"];
-                String pitch = 'load:$viavalue';
-                
-                Uint8List uint8list = Uint8List.fromList(pitch.codeUnits);
-                globals.connBT?.output.add(uint8list);
+                if(isConnected()) {
+                  print('LOAD: BLOC');
+                  String viavalue = via["value"];
+                  String pitch = 'load:$viavalue';
+                  
+                  Uint8List uint8list = Uint8List.fromList(pitch.codeUnits);
+                  globals.connBT?.output.add(uint8list);
+                } else {
+                  globals.newBloc = via;
+                  Navigator.push(context,MaterialPageRoute(builder: (context) => scenepanel.ScenePanel(edit: false, view: true)));
+                }
               }
             )
           )
@@ -280,14 +286,21 @@ class _SceneSelectHome extends State<SceneSelectHome> {
           Padding(
             padding: EdgeInsets.only(right: 1.0),
             child: IconButton(
+              icon: const Icon(Icons.sms),
+              tooltip: 'Mezuek',
+              onPressed: () {
+                
+              },
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 1.0),
+            child: IconButton(
               icon: const Icon(Icons.add),
               tooltip: 'Bloke barrije',
               onPressed: () {
                 globals.clearNewBloc();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: false)),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: false)));
               },
             ),
           ),

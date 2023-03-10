@@ -6,7 +6,8 @@ import 'globals.dart' as globals;
 
 class ScenePanel extends StatefulWidget {
   final bool edit;
-  ScenePanel({required this.edit});
+  final bool? view;
+  ScenePanel({required this.edit, this.view});
 
   @override
   State<ScenePanel> createState() => _ScenePanel();
@@ -24,42 +25,42 @@ class _ScenePanel extends State<ScenePanel> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hellboard 40ko panela'),
+        title: (widget.edit == true)? Text(globals.newBloc['name']) : Text('Hellboard 40ko panela'),
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          FloatingActionButton(
-            onPressed: () {
-              setState(() {
-                globals.newBloc['value'] = '';
-                _points = [];
-              });
-            },
-            backgroundColor: Color.fromARGB(255, 113, 194, 139),
-            heroTag: null,
-            child: const Icon(Icons.remove),
-          ),
-          SizedBox(width: 10),
-          FloatingActionButton(
-            onPressed: () {
-              List aValue = [];
+          if(widget.view != true)
+            FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  globals.newBloc['value'] = '';
+                  _points = [];
+                });
+              },
+              backgroundColor: Color.fromARGB(255, 113, 194, 139),
+              heroTag: null,
+              child: const Icon(Icons.remove),
+            ),
+          if(widget.view != true)
+            SizedBox(width: 10),
+          if(widget.view != true)
+            FloatingActionButton(
+              onPressed: () {
+                List aValue = [];
 
-              for(var i=0;i<_points.length;i++) {
-                  aValue.add(_points[i]['led']);
-              }
+                for(var i=0;i<_points.length;i++) {
+                    aValue.add(_points[i]['led']);
+                }
 
-              globals.newBloc['value'] = aValue.join('-');
+                globals.newBloc['value'] = aValue.join('-');
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: widget.edit)),
-              );
-            },
-            backgroundColor: Color.fromARGB(255, 65, 154, 226),
-            heroTag: null,
-            child: const Icon(Icons.save),
-          )          
+                Navigator.push(context, MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: widget.edit)));
+              },
+              backgroundColor: Color.fromARGB(255, 65, 154, 226),
+              heroTag: null,
+              child: const Icon(Icons.save),
+            )          
         ]
       ),
       body: SizedBox(
@@ -71,14 +72,21 @@ class _ScenePanel extends State<ScenePanel> {
           maxScale: 4,
           child: GestureDetector(
             onTapUp: (TapUpDetails details) {
-              RenderBox box = context.findRenderObject() as RenderBox;
-              Offset global = box.localToGlobal(details.localPosition);
-              Map coords    = getRealCoords(global);
+              if(widget.view != true) {
+                RenderBox box = context.findRenderObject() as RenderBox;
+                Offset global = box.localToGlobal(details.localPosition);
+                Map coords    = getRealCoords(global);
+                int index     = _points.indexWhere((i) => i['led'] == coords['led']);
 
-              if(coords['x'] != 0) {
                 setState(() {
-                  calculate = false;
-                  _points.add(coords);
+                  if(coords['x'] != 0) {
+                    if(index == -1) {
+                      calculate = false;
+                      _points.add(coords);
+                    } else {
+                      _points.removeAt(index);
+                    }
+                  }
                 });
               }
             },

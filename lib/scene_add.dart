@@ -23,7 +23,7 @@ class _SceneAdd extends State<SceneAdd> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hellboard geitxu Blokie'),
+        title: (widget.edit == true)? Text(globals.newBloc['name']) : Text('Hellboard 40ko panela'),
         automaticallyImplyLeading: false,
         actions: <Widget>[
           Padding(
