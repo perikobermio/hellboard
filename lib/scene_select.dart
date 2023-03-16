@@ -245,11 +245,7 @@ class _SceneSelectHome extends State<SceneSelectHome> {
                   globals.connBT?.output.add(uint8list);
                 } else {
                   globals.newBloc = via;
-<<<<<<< Updated upstream
-                  Navigator.push(context,MaterialPageRoute(builder: (context) => scenepanel.ScenePanel(edit: false, view: true)));
-=======
                   Navigator.push(context,MaterialPageRoute(builder: (context) => scenepanel.ScenePanel(panel: via["panel"], edit: false, view: true)));
->>>>>>> Stashed changes
                 }
               }
             )
@@ -307,30 +303,6 @@ class _SceneSelectHome extends State<SceneSelectHome> {
               )
             ),
           Padding(
-<<<<<<< Updated upstream
-            padding: EdgeInsets.only(right: 1.0),
-            child: IconButton(
-              icon: const Icon(Icons.sms),
-              tooltip: 'Mezuek',
-              onPressed: () {
-                
-              },
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(right: 1.0),
-            child: IconButton(
-              icon: const Icon(Icons.add),
-              tooltip: 'Bloke barrije',
-              onPressed: () {
-                globals.clearNewBloc();
-                Navigator.push(context, MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: false)));
-              },
-            ),
-          ),
-          Padding(
-=======
->>>>>>> Stashed changes
             padding: EdgeInsets.only(right: 5.0),
             child: IconButton(
               icon: isConnected() ? const Icon(Icons.bluetooth) : const Icon(Icons.bluetooth_disabled),

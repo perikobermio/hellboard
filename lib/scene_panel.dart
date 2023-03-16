@@ -3,16 +3,10 @@ import 'dart:core';
 import 'scene_add.dart' as sceneadd;
 import 'globals.dart' as globals;
 class ScenePanel extends StatefulWidget {
-<<<<<<< Updated upstream
-  final bool edit;
-  final bool? view;
-  ScenePanel({required this.edit, this.view});
-=======
   final String  panel;
   final bool    edit;
   final bool?   view;
   ScenePanel({required this.edit, required this.panel, this.view});
->>>>>>> Stashed changes
 
   @override
   State<ScenePanel> createState() => _ScenePanel();
@@ -47,11 +41,7 @@ class _ScenePanel extends State<ScenePanel> {
 
     return Scaffold(
       appBar: AppBar(
-<<<<<<< Updated upstream
-        title: (widget.edit == true)? Text(globals.newBloc['name']) : Text('Hellboard 40ko panela'),
-=======
         title: (widget.edit == true)? Text(globals.newBloc['name']) : Text('Hellboard ${widget.panel}'),
->>>>>>> Stashed changes
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -102,11 +92,7 @@ class _ScenePanel extends State<ScenePanel> {
               if(widget.view != true) {
                 RenderBox box = context.findRenderObject() as RenderBox;
                 Offset global = box.localToGlobal(details.localPosition);
-<<<<<<< Updated upstream
-                Map coords    = getRealCoords(global);
-=======
                 Map coords    = getRealCoords(global, widget.panel);
->>>>>>> Stashed changes
                 int index     = _points.indexWhere((i) => i['led'] == coords['led']);
 
                 setState(() {
