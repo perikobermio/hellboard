@@ -10,7 +10,6 @@ import 'scene_messages.dart' as scenemessages;
 import 'globals.dart' as globals;
 import 'config.dart' as config;
 import 'package:badges/badges.dart' as badges;
-
 class SceneSelectHome extends StatefulWidget {
   SceneSelectHome();
 
@@ -19,6 +18,12 @@ class SceneSelectHome extends StatefulWidget {
 }
 class _SceneSelectHome extends State<SceneSelectHome> {
   _SceneSelectHome();
+
+  @override
+  void initState() {
+    super.initState();
+    globals.loadMessages().then((_) => setState(() {}));
+  }
  
   @override
   Widget build(BuildContext context) {
@@ -371,7 +376,7 @@ class ViaActions {
 
     if(toggle == true) {
       globals.userfile['vias'][viaid] = true;
-      ms.create(globals.userfile['user'], via);
+      ms.done(globals.userfile['user'], via);
     } else {
       globals.userfile['vias'].remove(viaid);
     }

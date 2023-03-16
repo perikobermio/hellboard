@@ -32,10 +32,7 @@ class _SceneAdd extends State<SceneAdd> {
               icon: const Icon(Icons.arrow_back),
               tooltip: 'Hasikerara',
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),
-                );
+                Navigator.push(context,MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()));
               },
             ),
           )
@@ -168,6 +165,7 @@ class _SceneAdd extends State<SceneAdd> {
                       ElevatedButton(
                         onPressed: () {
                           globals.FireActions fa  = globals.FireActions();
+                          globals.Messaging ms    = globals.Messaging();
                           String grade            = globals.getGrade(globals.newBloc['grade']);
                           String viaId            = (widget.edit)? globals.newBloc['id'] : DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -187,6 +185,12 @@ class _SceneAdd extends State<SceneAdd> {
                             globals.vias[grade] = {grade: globals.newBloc};
                           } else {
                             globals.vias[grade][viaId]  = globals.newBloc;
+                          }
+
+                          if(widget.edit) {
+                            ms.modify(globals.userfile['user'], globals.newBloc);
+                          } else {
+                            ms.create(globals.userfile['user'], globals.newBloc);
                           }
 
                           Navigator.push(context,MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()));

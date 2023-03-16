@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:core';
 import 'globals.dart' as globals;
+import 'scene_select.dart' as sceneselect;
 
 class SceneMessages extends StatefulWidget {  
   SceneMessages();
@@ -13,80 +14,108 @@ class _SceneMessages extends State<SceneMessages> {
 
   @override
   Widget build(BuildContext context) {
-    const Map<String,int> pts = {
-      'V': 1, 'V+': 2, '6a': 4, '6a+': 6, '6b': 10, '6b+': 14, '6c': 20, '6c+': 25, '7a': 35, '7a+': 42, '7b': 52, '7b+': 56, '7c': 70, '7c+': 80, 
-      '8a': 110, '8a+': 130, '8b': 170, '8b+': 190, '8c': 240, '8c+': 280, '9a': 350, '9a+': 400, '9b': 500, '9b+': 700, '9c': 1000, '9c+': 2000
-    };
 
-    int getPts(user) {
-      int res = 0;
+    Future<void> deleteMsg(msg) async {
+      globals.FireActions fa = globals.FireActions();
 
-      doit(via) {
-        for(var grade in globals.vias.values) {
-          if(grade.containsKey(via)) {
-            res = res + pts[grade[via]['grade']]!;
-          }
-        }
-      } 
-      globals.users[user]['vias'].keys.forEach((via) => doit(via));
-
-      return res;
+      fa.delete('messages/${globals.userfile['user']}/${msg['type']}/${msg['id']}');
+      globals.messages[msg['type']].removeWhere((key, value) => key == msg['id']);
     }
-  
 
-    List<Map> getLeaderboard() {
-      List<Map> users = [];
+    Future<void> deleteAllMsg() async {
+      globals.FireActions fa = globals.FireActions();
 
-      globals.users.forEach((k, v) => {
-        users.add({
-          'name': v['label'],
-          'pts': getPts(k),
+      fa.delete('messages/${globals.userfile['user']}');
+      globals.messages = {};
+    }
+    
+    List<Map> getAllMsgs() {
+      List<Map> msgs = [];
+
+      globals.messages.forEach((type, items) => {
+        items.forEach((taim, v) => {
+          msgs.add({'type': type, 'id': taim, 'msg': v['msg'], 'status': v['status']})
         })
       });
 
-      users.sort((a, b) => b["pts"].compareTo(a["pts"]));
+      msgs.sort((a, b) => b['id'].compareTo(a['id']));
 
-      return users;
+      return msgs;
+    }
+
+    Future<void> setViewed() async {
+      globals.FireActions fa = globals.FireActions();
+
+      globals.messages.forEach((type, items) => {
+        items.forEach((taim, v) => {
+          if(v['status'] == 1) {
+            fa.set('messages/${globals.userfile['user']}/$type/$taim/status', 0)
+          }
+        })
+      });
     }
 
     listWidget() {
       List<Widget>  items   = [];
-      List<Map>     users   = getLeaderboard();
-      int           ranking = 1;
 
       Widget getLeading(type) {
-        if(type == 1) {
-          return Icon(Icons.military_tech, color: Color.fromARGB(255, 255, 225, 1), size: 30.0);
-        } if(type == 2) {
-          return Icon(Icons.military_tech, color: Color.fromARGB(255, 184, 187, 190), size: 25.0);
-        } if(type == 3) {
-          return Icon(Icons.military_tech, color: Color.fromARGB(255, 191, 162, 73), size: 20.0);
+        if(type == 'done') {
+          return Icon(Icons.done, color: Color.fromARGB(255, 36, 141, 198), size: 30.0);
+        } if(type == 'create') {
+          return Icon(Icons.add, color: Color.fromARGB(255, 5, 146, 66), size: 25.0);
+        } if(type == 'modify') {
+          return Icon(Icons.edit, color: Color.fromARGB(255, 191, 162, 73), size: 20.0);
         } else {
-          return Text('${type.toString()}.');
+          return Icon(Icons.sms, color: Color.fromARGB(255, 0, 0, 0), size: 20.0);
         }
       }
 
-      for(Map user in users) {
-        items.add(ListTile( 
-          leading: SizedBox(
-            width: 30,
-            child: Center(
-              child: getLeading(ranking)
+      for(Map msg in getAllMsgs()) {
+        items.add(Card(
+          color: (msg['status'] == 1)? Color.fromARGB(255, 255, 255, 255) : Color.fromARGB(255, 200, 234, 185),
+          child: ListTile( 
+            leading: getLeading(msg['type']),
+            title: Text(msg['msg'], style: TextStyle(fontStyle: FontStyle.italic)),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete, color: Color.fromARGB(255, 135, 133, 128), size: 20.0),
+              tooltip: 'Ezabatu',
+              onPressed: () {
+                deleteMsg(msg).then((_) => setState(() {}) );
+              }
             )
-          ),
-          title: Text(user['name']),
-          trailing: Text('${user['pts']} pts'),
-          onTap: () {}
-        ));
-        ranking = ranking + 1;
+          ))
+        );
       }
 
       return items;
     }
 
+    setViewed();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Shame Leaderboard'),
+        automaticallyImplyLeading: false,
+        title: Row(
+          children: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.arrow_back),
+              tooltip: 'Atzera',
+              onPressed: () {
+                Navigator.push(context,MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()));
+              },
+            ),
+            Text('Mezuek'),
+          ]
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.delete_forever),
+            tooltip: 'Borra danak',
+            onPressed: () {
+              deleteAllMsg().then((_) => setState(() {}) );
+            },
+          )
+        ]
       ),
       body: Container(
         color: Colors.white,

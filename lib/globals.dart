@@ -2,7 +2,9 @@ library globals;
 
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'dart:io';
+import 'config.dart' as config;
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -127,23 +129,56 @@ class FireActions {
 }
 
 class Messaging {
-  Future<void> create(createdBy, via) async {
-    FireActions fa  = FireActions();
-    String now      = DateTime.now().millisecondsSinceEpoch.toString();
-    fa.set('messages/erik/done/$now', getMessage(now, createdBy, via));
+  Future<void> done(createdBy, via) async {
+    sendMessage(createdBy, via, 'done');
   }
 
-  Map getMessage(id, createdBy, via) {
-    String grade = getGrade(via['grade']);
-    return {
-      'id': id,
-      'status': 1,
-      'msg': "${users[createdBy]['label']} artistiek '${vias[grade][via['id']]['name']} (${vias[grade][via['id']]['grade']})' blokie ataratie lortu dau!"
-    };
+  Future<void> create(createdBy, via) async {
+    sendMessage(createdBy, via, 'create');
+  }
+
+  Future<void> modify(createdBy, via) async {
+    sendMessage(createdBy, via, 'modify');
+  }
+
+  Future<void> sendMessage(createdBy, via, type) async {
+    FireActions fa  = FireActions();
+    String now      = DateTime.now().millisecondsSinceEpoch.toString();
+
+    users.forEach((key, user) => {
+      if(userfile['user'] != key) {
+        fa.set('messages/$key/$type/$now', getMessage(now, createdBy, via, type))
+      }
+    });
+  }
+
+  Map getMessage(id, createdBy, via, type) {
+    String grade  = getGrade(via['grade']);
+    String msg    = '';
+
+    if(type == 'done') {
+      msg = "${users[createdBy]['label'].toUpperCase()} artistiek '${vias[grade][via['id']]['name']} (${vias[grade][via['id']]['grade']})' blokie ataratie lortu dau!";
+    } else if(type == 'create') {
+      msg = "${users[createdBy]['label'].toUpperCase()} artistiek '${vias[grade][via['id']]['name']}' izeneko blokie sortu dau. Bota biztazo bat '${vias[grade][via['id']]['grade']}' da ta!";
+    } else if(type == 'modify') {
+      msg = "${users[createdBy]['label'].toUpperCase()} artistiek '${vias[grade][via['id']]['name']}' izeneko blokie aldatu dau. Bota biztazo bat ia '${vias[grade][via['id']]['grade']}' gradue dekota biher bada!";
+    }
+
+    return {'id': id,'status': 1,'msg': msg};
   }
 }
 
 void printLongString(String text) {
   final RegExp pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
   pattern.allMatches(text).forEach((RegExpMatch match) =>   print(match.group(0)));
+}
+
+Future<void> loadMessages() async {
+  final httpPackageUrl  = Uri.parse('${config.messagesFile}/${userfile['user']}.json');
+  final promiseUsers    = await http.read(httpPackageUrl);
+  final json            = jsonDecode(promiseUsers);
+  
+  if(json != null) {
+    messages    = json;
+  }
 }
