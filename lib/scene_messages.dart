@@ -72,7 +72,7 @@ class _SceneMessages extends State<SceneMessages> {
 
       for(Map msg in getAllMsgs()) {
         items.add(Card(
-          color: (msg['status'] == 1)? Color.fromARGB(255, 255, 255, 255) : Color.fromARGB(255, 200, 234, 185),
+          color: (msg['status'] == 1)? Color.fromARGB(255, 200, 234, 185) : Color.fromARGB(255, 255, 255, 255),
           child: ListTile( 
             leading: getLeading(msg['type']),
             title: Text(msg['msg'], style: TextStyle(fontStyle: FontStyle.italic)),
