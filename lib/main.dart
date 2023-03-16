@@ -27,6 +27,12 @@ Future<void> loadVias() async {
   globals.orderVias();
 }
 
+Future<void> loadPanels(panel) async {
+  final httpPackageUrl      = Uri.parse('${config.rtd}$panel.json');
+  final promise             = await http.read(httpPackageUrl);
+  globals.panels[panel]     = jsonDecode(promise);
+}
+
 Future<void> loadUsers() async {
   final httpPackageUrl = Uri.parse(config.usersFile);
   final promiseUsers   = await http.read(httpPackageUrl);
@@ -62,14 +68,14 @@ Future<void> preLoad() async {
     });
   }
 
-  if(globals.panel40.isEmpty) {
-    final httpPackageUrl = Uri.parse(config.panel40);
-    final promiseUsers   = await http.read(httpPackageUrl);
-    globals.panel40      = jsonDecode(promiseUsers);
+  if(globals.panels.isEmpty) {
+    loadPanels('panel40');
+    loadPanels('panel20');
   }
 
   final userfile = globals.UserFile();
   await userfile.preparePersonal();
+
 }
 
 class SceneInit extends StatefulWidget {
@@ -90,7 +96,6 @@ class _SceneInit extends State<SceneInit> {
             theme: ThemeData(
               primarySwatch: Colors.lightGreen,
             ),
-            //home: sceneselect.SceneSelectHome()
             home: scenelogin.SceneLogin()
           );
         } else {

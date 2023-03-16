@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'dart:core';
 import 'scene_add.dart' as sceneadd;
 import 'globals.dart' as globals;
-//import 'scene_add.dart' as scenepanel;
-
 class ScenePanel extends StatefulWidget {
+<<<<<<< Updated upstream
   final bool edit;
   final bool? view;
   ScenePanel({required this.edit, this.view});
+=======
+  final String  panel;
+  final bool    edit;
+  final bool?   view;
+  ScenePanel({required this.edit, required this.panel, this.view});
+>>>>>>> Stashed changes
 
   @override
   State<ScenePanel> createState() => _ScenePanel();
@@ -17,15 +22,36 @@ class _ScenePanel extends State<ScenePanel> {
   List<Map>     _points   = [];
   bool          calculate = true;
 
+  final viewTransformationController = TransformationController();
+
+  @override
+  void initState() {
+    if(widget.panel == 'panel20') {
+      double zoomFactor = 2.0;
+      //double xTranslate = 300.0;
+      //double yTranslate = 300.0;
+      viewTransformationController.value.setEntry(0, 0, zoomFactor);
+      viewTransformationController.value.setEntry(1, 1, zoomFactor);
+      viewTransformationController.value.setEntry(2, 2, zoomFactor);
+      //viewTransformationController.value.setEntry(0, 3, -xTranslate);
+      //viewTransformationController.value.setEntry(1, 3, -yTranslate);
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     if(calculate && globals.newBloc['value'] != '') {
-      _points = setPoints();
+      _points = setPoints(widget.panel);
     }
 
     return Scaffold(
       appBar: AppBar(
+<<<<<<< Updated upstream
         title: (widget.edit == true)? Text(globals.newBloc['name']) : Text('Hellboard 40ko panela'),
+=======
+        title: (widget.edit == true)? Text(globals.newBloc['name']) : Text('Hellboard ${widget.panel}'),
+>>>>>>> Stashed changes
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -64,18 +90,23 @@ class _ScenePanel extends State<ScenePanel> {
         ]
       ),
       body: SizedBox(
-        width: 360,
-        height: 740,
+        width: 5000,
+        height: 2000,
         child: InteractiveViewer(
+          transformationController: viewTransformationController,
           boundaryMargin: const EdgeInsets.all(5.0),
           minScale: 0.2,
-          maxScale: 4,
+          maxScale: 10,
           child: GestureDetector(
             onTapUp: (TapUpDetails details) {
               if(widget.view != true) {
                 RenderBox box = context.findRenderObject() as RenderBox;
                 Offset global = box.localToGlobal(details.localPosition);
+<<<<<<< Updated upstream
                 Map coords    = getRealCoords(global);
+=======
+                Map coords    = getRealCoords(global, widget.panel);
+>>>>>>> Stashed changes
                 int index     = _points.indexWhere((i) => i['led'] == coords['led']);
 
                 setState(() {
@@ -92,7 +123,7 @@ class _ScenePanel extends State<ScenePanel> {
             },
             child: Stack(
               children: [
-                Image.asset('assets/img/panel40.png'),
+                Image.asset('assets/img/${widget.panel}.jpg'),
                 ..._points.map((point) => Positioned(
                   left: point['x'].toDouble(),
                   top:  point['y'].toDouble(),
@@ -120,9 +151,9 @@ class _ScenePanel extends State<ScenePanel> {
   }
 }
 
-Map getRealCoords(coords) {
+Map getRealCoords(coords, panel) {
   Map ret = {'x': 0};
-  List<dynamic> point =  globals.panel40.where((i) => i['x'] < coords.dx && coords.dx < i['x'] + i['w'] && i['y'] < coords.dy && coords.dy < i['y'] + i['h']).toList();
+  List<dynamic> point = globals.panels[panel].where((i) => i['x'] < coords.dx && coords.dx < i['x'] + i['w'] && i['y'] < coords.dy && coords.dy < i['y'] + i['h']).toList();
   if(point.isNotEmpty) {
     ret = point[0];
   }
@@ -130,12 +161,12 @@ Map getRealCoords(coords) {
   return ret;
 }
 
-List<Map> setPoints() {
+List<Map> setPoints(panel) {
   List<Map>     p     = [];
   List<dynamic> point = [];
 
   for(var led in globals.newBloc['value'].split('-') ) {
-    point = globals.panel40.where((i) => i['led'] == led).toList();
+    point = globals.panels[panel].where((i) => i['led'] == led).toList();
     if(point.isNotEmpty) {
       p.add(point[0]);
     }

@@ -6,12 +6,16 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-Map<String, dynamic> vias         = {};
-Map<String, dynamic> users        = {};
-List<dynamic> panel40             = [];
-Map<String, dynamic> userfile     = {'user':'', 'data': {}, 'vias': {}};
-BluetoothConnection? connBT;
-Map<String, dynamic> newBloc      = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': '', 'rating': 0};
+Map<String, dynamic>  vias         = {};
+Map<String, dynamic>  users        = {};
+Map<String, dynamic>  messages     = {};
+
+List<dynamic>         panel40      = [];
+Map<String, dynamic>  panels       = {};
+
+Map<String, dynamic>  userfile     = {'user':'', 'data': {}, 'vias': {}};
+BluetoothConnection?  connBT;
+Map<String, dynamic>  newBloc      = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': '', 'panel': 'panel40', 'rating': 0};
 
 Map userViasDone() {
   return users[userfile['user']]['vias'];
@@ -22,7 +26,7 @@ Map userViasRate() {
 }
 
 void clearNewBloc() {
-  newBloc = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': '', 'rating': 0};
+  newBloc = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': '', 'panel': 'panel40', 'rating': 0};
 }
 
 void orderVias() {
@@ -120,6 +124,23 @@ class FireActions {
     return status;
   }  
 
+}
+
+class Messaging {
+  Future<void> create(createdBy, via) async {
+    FireActions fa  = FireActions();
+    String now      = DateTime.now().millisecondsSinceEpoch.toString();
+    fa.set('messages/erik/done/$now', getMessage(now, createdBy, via));
+  }
+
+  Map getMessage(id, createdBy, via) {
+    String grade = getGrade(via['grade']);
+    return {
+      'id': id,
+      'status': 1,
+      'msg': "${users[createdBy]['label']} artistiek '${vias[grade][via['id']]['name']} (${vias[grade][via['id']]['grade']})' blokie ataratie lortu dau!"
+    };
+  }
 }
 
 void printLongString(String text) {

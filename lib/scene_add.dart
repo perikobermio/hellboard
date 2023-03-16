@@ -50,12 +50,22 @@ class _SceneAdd extends State<SceneAdd> {
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: SelectFormField(
+                    type: SelectFormFieldType.dropdown, // or can be dialog
+                    initialValue: globals.newBloc['panel']!,
+                    icon: Icon(Icons.view_compact),
+                    labelText: 'Panela',
+                    items: config.panels,
+                    onChanged: (val) => globals.newBloc['panel'] = val,
+                    onSaved: (val) => globals.newBloc['panel'] = val!
+                  )
+                ),
+                
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                   child: OutlinedButton.icon(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => scenepanel.ScenePanel(edit: widget.edit)),
-                      );
+                      Navigator.push(context,MaterialPageRoute(builder: (context) => scenepanel.ScenePanel(panel: globals.newBloc['panel'], edit: widget.edit)));
                     },
                     icon: Icon(Icons.sports_score),
                     label: Text((globals.newBloc['value'] != '')? globals.newBloc['value'] : 'Aukeratu Blokie'),

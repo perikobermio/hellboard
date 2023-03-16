@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'scene_select.dart' as sceneselect;
 import 'dart:core';
 import 'globals.dart' as globals;
+import 'package:firebase_database/firebase_database.dart';
+import 'dart:convert';
+import 'config.dart' as config;
+import 'package:http/http.dart' as http;
 
 class SceneLogin extends StatefulWidget {
   SceneLogin();
@@ -70,11 +74,12 @@ class _SceneLogin extends State<SceneLogin> {
                     final userfile = globals.UserFile();
                     userfile.saveUser();
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()),
-                    );
-                  
+                    final watchUsers = FirebaseDatabase.instance.ref("messages/${globals.userfile['user']}");
+                    watchUsers.onChildChanged.listen((event) {
+                      loadMessages();
+                    });
+
+                    loadMessages().then((res) => Navigator.push(context,MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome())));
                 },
                 child: const Text('Sartun'),
               )
@@ -83,5 +88,15 @@ class _SceneLogin extends State<SceneLogin> {
         ],
       )
     );
+  }
+}
+
+Future<void> loadMessages() async {
+  final httpPackageUrl  = Uri.parse('${config.messagesFile}/${globals.userfile['user']}.json');
+  final promiseUsers    = await http.read(httpPackageUrl);
+  final json            = jsonDecode(promiseUsers);
+  
+  if(json != null) {
+    globals.messages    = json;
   }
 }

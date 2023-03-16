@@ -4,9 +4,12 @@ import 'dart:typed_data';
 import 'scene_panel.dart' as scenepanel;
 import 'scene_add.dart' as sceneadd;
 import 'scene_user.dart' as sceneuser;
-import 'scene_debug.dart' as scenedebug;
+import 'scene_admin.dart' as sceneadmin;
+import 'scene_ranking.dart' as sceneranking;
+import 'scene_messages.dart' as scenemessages;
 import 'globals.dart' as globals;
 import 'config.dart' as config;
+import 'package:badges/badges.dart' as badges;
 
 class SceneSelectHome extends StatefulWidget {
   SceneSelectHome();
@@ -242,7 +245,11 @@ class _SceneSelectHome extends State<SceneSelectHome> {
                   globals.connBT?.output.add(uint8list);
                 } else {
                   globals.newBloc = via;
+<<<<<<< Updated upstream
                   Navigator.push(context,MaterialPageRoute(builder: (context) => scenepanel.ScenePanel(edit: false, view: true)));
+=======
+                  Navigator.push(context,MaterialPageRoute(builder: (context) => scenepanel.ScenePanel(panel: via["panel"], edit: false, view: true)));
+>>>>>>> Stashed changes
                 }
               }
             )
@@ -267,6 +274,22 @@ class _SceneSelectHome extends State<SceneSelectHome> {
       return items;
     }
 
+    Widget getMessagesIcon() {
+      int done    = (globals.messages.containsKey('done'))?   globals.messages['done'].values.where((i) => i['status'] == 1).toList().length : 0;
+      int create  = (globals.messages.containsKey('create'))? globals.messages['create'].values.where((i) => i['status'] == 1).toList().length : 0;
+      int modify  = (globals.messages.containsKey('modify'))? globals.messages['modify'].values.where((i) => i['status'] == 1).toList().length : 0;
+      int num     = done + create + modify;
+
+      if(num == 0) {
+        return Icon(Icons.sms);
+      } else {
+        return badges.Badge(
+          badgeContent: Text(num.toString(), style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)) ),
+          child: Icon(Icons.sms),
+        );
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Hellboard'),
@@ -279,11 +302,12 @@ class _SceneSelectHome extends State<SceneSelectHome> {
                 icon: const Icon(Icons.adb),
                 tooltip: 'Admin',
                 onPressed: () {
-                  Navigator.push(context,MaterialPageRoute(builder: (context) => scenedebug.SceneDebug()));
+                  Navigator.push(context,MaterialPageRoute(builder: (context) => sceneadmin.SceneAdmin()));
                 },
               )
             ),
           Padding(
+<<<<<<< Updated upstream
             padding: EdgeInsets.only(right: 1.0),
             child: IconButton(
               icon: const Icon(Icons.sms),
@@ -305,6 +329,8 @@ class _SceneSelectHome extends State<SceneSelectHome> {
             ),
           ),
           Padding(
+=======
+>>>>>>> Stashed changes
             padding: EdgeInsets.only(right: 5.0),
             child: IconButton(
               icon: isConnected() ? const Icon(Icons.bluetooth) : const Icon(Icons.bluetooth_disabled),
@@ -326,6 +352,34 @@ class _SceneSelectHome extends State<SceneSelectHome> {
             children: getGrade(globals.vias)
         )
       
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.stars),
+            label: 'Shameboard',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add, size: 60.0),
+            label: 'Blokie sortu'
+          ),
+          BottomNavigationBarItem(
+            icon: getMessagesIcon(),
+            label: 'Mezuek'
+          ),
+        ],
+        selectedItemColor: Color.fromARGB(255, 94, 94, 94),
+        currentIndex: 1,
+        onTap: (int index) {
+          if(index == 0) {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => sceneranking.SceneRanking()));
+          } else if(index == 1) {
+            globals.clearNewBloc();
+            Navigator.push(context, MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: false)));
+          } else if(index == 2) {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => scenemessages.SceneMessages()));
+          }
+        }
       )
     );
   }
@@ -336,6 +390,7 @@ class ViaActions {
 
   Future<void> setDone(via, user) async {
     globals.FireActions fa = globals.FireActions();
+    globals.Messaging ms = globals.Messaging();
 
     String userid = user['user'];
     String viaid  = via['id'].toString();
@@ -344,6 +399,7 @@ class ViaActions {
 
     if(toggle == true) {
       globals.userfile['vias'][viaid] = true;
+      ms.create(globals.userfile['user'], via);
     } else {
       globals.userfile['vias'].remove(viaid);
     }

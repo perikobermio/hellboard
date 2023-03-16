@@ -20,6 +20,7 @@ dependencies:
   firebase_core: ^2.4.1
   firebase_database: ^10.0.9
   path_provider: ^2.0.2
+  badges: ^3.0.2
 
 dev_dependencies:
   flutter_test:
@@ -30,8 +31,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/vias.json
-    - assets/panel40.json
-    - assets/img/panel40.png
+    - assets/img/panel20.jpg
+    - assets/img/panel40.jpg
     - assets/img/logoh.png
-    - assets/img/panel40_dev.png

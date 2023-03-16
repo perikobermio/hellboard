@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-const btAddress   = 'C8:F0:9E:75:16:42';
-const viasFile    = 'https://hellboard-default-rtdb.firebaseio.com/blocs.json';
-const usersFile   = 'https://hellboard-default-rtdb.firebaseio.com/users.json';
-const panel40     = 'https://hellboard-default-rtdb.firebaseio.com/panel40.json';
+const btAddress     = 'C8:F0:9E:75:16:42';
+const viasFile      = 'https://hellboard-default-rtdb.firebaseio.com/blocs.json';
+const usersFile     = 'https://hellboard-default-rtdb.firebaseio.com/users.json';
+const messagesFile  = 'https://hellboard-default-rtdb.firebaseio.com/messages';
+const rtd           = 'https://hellboard-default-rtdb.firebaseio.com/';
 
 const List<Map<String, dynamic>> grades = [
   {'value': '-',    'label': '-'},    {'value': 'V',    'label': 'V'},    {'value': 'V+',    'label': 'V+'},
@@ -16,6 +17,11 @@ const List<Map<String, dynamic>> grades = [
   {'value': '9a',   'label': '9a'},   {'value': '9a+',   'label': '9a+'}, {'value': '9b',   'label': '9b'},   
   {'value': '9b+',   'label': '9b+'}, {'value': '9c',   'label': '9c'},   {'value': '9c+',   'label': '9c+'},
   {'value': '10',   'label': '10'}
+];
+
+const List<Map<String, dynamic>> panels = [
+  {'value': 'panel40',    'label': '40-ko panela'},
+  {'value': 'panel20',    'label': '20-ko panela'}
 ];
 
 const colors = {

@@ -3,18 +3,9 @@ import 'dart:core';
 import 'dart:math';
 import 'scene_select.dart' as sceneselect;
 import 'globals.dart' as globals;
-
-
-const Map sizes = {
-  'xs':   {'w': 15, 'y': 15},
-  's':    {'w': 18, 'y': 18},
-  'm':    {'w': 22, 'y': 22},
-  'l':    {'w': 25, 'y': 25},
-  'xl':   {'w': 30, 'y': 30}
-};
-Map currentSize = sizes['xs'];
 class SceneDebug extends StatefulWidget {
-  SceneDebug();
+  final String  panel;
+  SceneDebug({required this.panel});
 
   @override
   State<SceneDebug> createState() => _SceneDebug();
@@ -23,11 +14,12 @@ class SceneDebug extends StatefulWidget {
 class _SceneDebug extends State<SceneDebug> {
   List<Map>     _points       = [];
   Map           currentCoords = {'x': 0, 'y': 0, 'w': 0, 'h': 0, 'rx': 0, 'ry': 0, 'led': '---'};
+  Map           currentRecord = {'w': 15, 'h': 15};
   int           currentIndex  = -1;
 
   @override
   Widget build(BuildContext context) {
-    _points = setPoints();
+    _points = setPoints(widget.panel);
 
     return Scaffold(
       appBar: AppBar(
@@ -39,7 +31,7 @@ class _SceneDebug extends State<SceneDebug> {
           FloatingActionButton(
             onPressed: () {
               globals.FireActions fa  = globals.FireActions();
-              fa.set('panel40', globals.panel40);
+              fa.set(widget.panel, globals.panels[widget.panel]);
 
               Navigator.push(context,MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()));
             },
@@ -51,7 +43,7 @@ class _SceneDebug extends State<SceneDebug> {
             onPressed: () {
               setState(() {
                 if(currentIndex != -1) {
-                  globals.panel40.removeAt(currentIndex);
+                  globals.panels[widget.panel].removeAt(currentIndex);
                 }
                 currentCoords = {'x': 0, 'y': 0, 'w': 0, 'h': 0, 'rx': 0, 'ry': 0, 'led': '---'};
               });
@@ -62,11 +54,11 @@ class _SceneDebug extends State<SceneDebug> {
           ),
           FloatingActionButton(
             onPressed: () {
-              if(validate(currentCoords['led'])) {
-                if(isNew(currentCoords['led'])) {
-                  globals.panel40.add(currentCoords);
+              if(validate(currentCoords['led'], widget.panel)) {
+                if(isNew(currentCoords['led'], widget.panel)) {
+                  globals.panels[widget.panel].add(currentCoords);
                 } else {
-                  globals.panel40[currentIndex] = currentCoords;
+                  globals.panels[widget.panel][currentIndex] = currentCoords;
                 }
               } else {
                 print('NO VALIDATE');
@@ -207,19 +199,60 @@ class _SceneDebug extends State<SceneDebug> {
               )
             ]
           ),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Expanded(
+                child:
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'C-W',
+                    ),
+                    style:TextStyle(fontSize:10),
+                    keyboardType: TextInputType.number,
+                    controller: TextEditingController()..text = currentRecord['w']!.toString(),
+                    onSubmitted: (val) {
+                      setState(() {
+                        currentRecord['w'] = int.tryParse(val);
+                      });
+                    },
+                  )
+              ),
+              Expanded(
+                child:
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'C-H',
+                    ),
+                    style:TextStyle(fontSize:10),
+                    keyboardType: TextInputType.number,
+                    controller: TextEditingController()..text = currentRecord['h']!.toString(),
+                    onSubmitted: (val) {
+                      setState(() {
+                        currentRecord['h'] = int.tryParse(val);
+                      });
+                    },
+                  )
+              )
+            ]
+          ),
+          
           SizedBox(
             width: 360,
             height: 740,
             child: InteractiveViewer(
               boundaryMargin: const EdgeInsets.all(5.0),
               minScale: 0.2,
-              maxScale: 4,
+              maxScale: 10,
               child: GestureDetector(
                 onTapUp: (TapUpDetails details) {
                   RenderBox box = context.findRenderObject() as RenderBox;
                   Offset global = box.localToGlobal(details.localPosition);
-                  currentCoords = getRealCoords(global);
-                  currentIndex  = getCoordsIndex(currentCoords);
+                  currentCoords = getRealCoords(global, widget.panel, currentRecord);
+                  currentIndex  = getCoordsIndex(currentCoords, widget.panel);
 
                   setState(() {
                     if(currentIndex == -1) {
@@ -231,7 +264,7 @@ class _SceneDebug extends State<SceneDebug> {
                 },
                 child: Stack(
                   children: [
-                    Image.asset('assets/img/panel40.png'),
+                    Image.asset('assets/img/${widget.panel}.jpg'),
                     ..._points.map((point) => Positioned(
                       left: point['x'].toDouble(),
                       top:  point['y'].toDouble(),
@@ -254,7 +287,7 @@ class _SceneDebug extends State<SceneDebug> {
                       child: Text(point['led'], style: TextStyle(fontSize: 6, color: (point['led'] == currentCoords['led'])? Color.fromARGB(255, 255, 0, 0) : Color.fromARGB(255, 86, 240, 43))),
                       ),
                     ),
-                    if(isNew(currentCoords['led']))
+                    if(isNew(currentCoords['led'], widget.panel))
                       Positioned(
                         left: currentCoords['x']?.toDouble(),
                         top: currentCoords['y']?.toDouble(),
@@ -281,22 +314,26 @@ class _SceneDebug extends State<SceneDebug> {
   }
 }
 
-Map getRealCoords(coords) {
-  Map ret = {'x': coords.dx.toInt() - 7, 'y': coords.dy.toInt() - 7, 'w': 15, 'h': 15, 'rx': coords.dx.toInt(), 'ry': coords.dy.toInt(), 'led': '---'};
-  List<dynamic> point =  globals.panel40.where((i) => i['x'] < coords.dx && coords.dx < i['x'] + i['w'] && i['y'] < coords.dy && coords.dy < i['y'] + i['h']).toList();
+Map getRealCoords(coords, panel, currentRecord) {
+  Map ret = {'x': coords.dx.toInt() - 7, 'y': coords.dy.toInt() - 7, 'w': currentRecord['w'], 'h': currentRecord['h'], 'rx': coords.dx.toInt(), 'ry': coords.dy.toInt(), 'led': '---'};
+  List<dynamic> point =  globals.panels[panel].where((i) => i['x'] < coords.dx && coords.dx < i['x'] + i['w'] && i['y'] < coords.dy && coords.dy < i['y'] + i['h']).toList();
   if(point.isNotEmpty) {
     ret = point[0];
   } else {
-    ret['led'] = getNextLed();
+    ret['led'] = getNextLed(panel);
   }
 
   return ret;
 }
 
-String getNextLed() {
+String getNextLed(panel) {
+  if(globals.panels[panel].isEmpty) {
+    return '000';
+  }
+
   List<int> leds = [];
 
-  for(var item in globals.panel40) {
+  for(var item in globals.panels[panel]) {
     leds.add(int.tryParse(item['led']) ?? 0);
   }
 
@@ -317,26 +354,25 @@ String getNextLed() {
   return rets;
 }
 
-int getCoordsIndex(coords) {
-  return globals.panel40.indexWhere((i) => i['led'] == coords['led'] );
+int getCoordsIndex(coords, panel) {
+  return globals.panels[panel].indexWhere((i) => i['led'] == coords['led'] );
 }
 
-bool isNew(led) {
-  return (globals.panel40.where((i) => i['led'] == led).toList().isEmpty);
+bool isNew(led, panel) {
+  return (globals.panels[panel].where((i) => i['led'] == led).toList().isEmpty);
 }
 
-bool validate(led) {
+bool validate(led, panel) {
   return (
-    globals.panel40.where((i) => i['led'] == led).toList().isEmpty &&
-    led != '' && led != '---' && led.length == 3
+    globals.panels[panel].where((i) => i['led'] == led).toList().isEmpty && led != '' && led != '---'
   );
 }
 
-List<Map> setPoints() {
+List<Map> setPoints(panel) {
   List<Map>     p     = [];
   List<dynamic> point = [];
 
-  point = globals.panel40.toList();
+  point = globals.panels[panel].toList();
   for(var item in point) {
     p.add(item);
   }
