@@ -31,6 +31,19 @@ void clearNewBloc() {
   newBloc = { 'id': '', 'grade': 'v','owner': '','value': '','name': '','description': '', 'panel': 'panel40', 'rating': 0};
 }
 
+Map<String,dynamic> getVia(id) {
+  Map<String,dynamic> ret = {};
+
+  for(var i in vias.values) {
+    if(i.keys.contains(id)) {
+      ret = i[id];
+      break;
+    }
+  }
+  
+  return ret;
+}
+
 void orderVias() {
   Map<String, dynamic> temp = {};
   for(var grade in vias.keys) {
@@ -164,13 +177,8 @@ class Messaging {
       msg = "${users[createdBy]['label'].toUpperCase()} artistiek '${vias[grade][via['id']]['name']}' izeneko blokie aldatu dau. Bota biztazo bat ia '${vias[grade][via['id']]['grade']}' gradue dekota biher bada!";
     }
 
-    return {'id': id,'status': 1,'msg': msg};
+    return {'id': id,'status': 1,'msg': msg, 'viaid': via['id']};
   }
-}
-
-void printLongString(String text) {
-  final RegExp pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
-  pattern.allMatches(text).forEach((RegExpMatch match) =>   print(match.group(0)));
 }
 
 Future<void> loadMessages() async {

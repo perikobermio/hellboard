@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:core';
 import 'globals.dart' as globals;
+import 'scene_user.dart' as sceneuser;
 
 class SceneRanking extends StatefulWidget {  
   SceneRanking();
@@ -39,6 +40,7 @@ class _SceneRanking extends State<SceneRanking> {
 
       globals.users.forEach((k, v) => {
         users.add({
+          'id': k,
           'name': v['label'],
           'pts': getPts(k),
         })
@@ -76,7 +78,9 @@ class _SceneRanking extends State<SceneRanking> {
           ),
           title: Text(user['name']),
           trailing: Text('${user['pts']} pts'),
-          onTap: () {}
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => sceneuser.SceneUser(user: user['id'], section: 2)));
+          }
         ));
         ranking = ranking + 1;
       }

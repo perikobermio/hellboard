@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:core';
 import 'globals.dart' as globals;
 import 'scene_select.dart' as sceneselect;
-
+import 'scene_panel.dart' as scenepanel;
 class SceneMessages extends StatefulWidget {  
   SceneMessages();
 
@@ -34,7 +34,7 @@ class _SceneMessages extends State<SceneMessages> {
 
       globals.messages.forEach((type, items) => {
         items.forEach((taim, v) => {
-          msgs.add({'type': type, 'id': taim, 'msg': v['msg'], 'status': v['status']})
+          msgs.add({'type': type, 'id': taim, 'msg': v['msg'], 'status': v['status'], 'viaid': v['viaid']})
         })
       });
 
@@ -82,7 +82,13 @@ class _SceneMessages extends State<SceneMessages> {
               onPressed: () {
                 deleteMsg(msg).then((_) => setState(() {}) );
               }
-            )
+            ),
+            onTap: () {
+              globals.newBloc = globals.getVia(msg['viaid']);
+              if(globals.newBloc.isNotEmpty) {
+                Navigator.push(context,MaterialPageRoute(builder: (context) => scenepanel.ScenePanel(panel: globals.newBloc['panel'], edit: false, view: true)));
+              }
+            }
           ))
         );
       }

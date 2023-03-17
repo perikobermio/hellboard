@@ -80,8 +80,8 @@ class _ScenePanel extends State<ScenePanel> {
         ]
       ),
       body: SizedBox(
-        width: 5000,
-        height: 2000,
+        width: 360,
+        height: 740,
         child: InteractiveViewer(
           transformationController: viewTransformationController,
           boundaryMargin: const EdgeInsets.all(5.0),
