@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'scene_select.dart' as sceneselect;
 import 'dart:core';
 import 'globals.dart' as globals;
-import 'dart:convert';
-import 'config.dart' as config;
-import 'package:http/http.dart' as http;
 
 class SceneLogin extends StatefulWidget {
   SceneLogin();
