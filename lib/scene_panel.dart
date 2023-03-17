@@ -68,8 +68,9 @@ class _ScenePanel extends State<ScenePanel> {
                 for(var i=0;i<_points.length;i++) {
                     aValue.add(_points[i]['led']);
                 }
-
+                print(globals.vias['vi']['1679001857434']);
                 globals.newBloc['value'] = aValue.join('-');
+                print(globals.vias['vi']['1679001857434']);
 
                 Navigator.push(context, MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: widget.edit)));
               },

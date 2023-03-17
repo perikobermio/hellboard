@@ -21,6 +21,7 @@ class _SceneAdd extends State<SceneAdd> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: (widget.edit == true)? Text(globals.newBloc['name']) : Text('Hellboard 40ko panela'),
@@ -32,6 +33,7 @@ class _SceneAdd extends State<SceneAdd> {
               icon: const Icon(Icons.arrow_back),
               tooltip: 'Hasikerara',
               onPressed: () {
+                globals.clearNewBloc();
                 Navigator.push(context,MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()));
               },
             ),
@@ -113,7 +115,7 @@ class _SceneAdd extends State<SceneAdd> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      if(widget.edit) ...[
+                      if(widget.edit && globals.userfile['user'] == globals.newBloc['owner']) ...[
                         OutlinedButton(
                           onPressed: () {
                             showModalBottomSheet<void>(
@@ -162,42 +164,43 @@ class _SceneAdd extends State<SceneAdd> {
                           child: const Text('Ezabatu'),
                         )
                       ],
-                      ElevatedButton(
-                        onPressed: () {
-                          globals.FireActions fa  = globals.FireActions();
-                          globals.Messaging ms    = globals.Messaging();
-                          String grade            = globals.getGrade(globals.newBloc['grade']);
-                          String viaId            = (widget.edit)? globals.newBloc['id'] : DateTime.now().millisecondsSinceEpoch.toString();
+                      if(!widget.edit || globals.userfile['user'] == globals.newBloc['owner'])
+                        ElevatedButton(
+                          onPressed: () {
+                            globals.FireActions fa  = globals.FireActions();
+                            globals.Messaging ms    = globals.Messaging();
+                            String grade            = globals.getGrade(globals.newBloc['grade']);
+                            String viaId            = (widget.edit)? globals.newBloc['id'] : DateTime.now().millisecondsSinceEpoch.toString();
 
-                          if(widget.edit) {
-                            oldGrade  = globals.getGrade(oldGrade);
-                            if(oldGrade != grade) {
-                              fa.delete('blocs/$oldGrade/$viaId');
-                              globals.vias[oldGrade].remove(viaId);
+                            if(widget.edit) {
+                              oldGrade  = globals.getGrade(oldGrade);
+                              if(oldGrade != grade) {
+                                fa.delete('blocs/$oldGrade/$viaId');
+                                globals.vias[oldGrade].remove(viaId);
+                              }
                             }
-                          }
 
-                          globals.newBloc['owner']    = globals.userfile['user'];
-                          globals.newBloc['id']       = viaId;
-                          fa.set('blocs/$grade/$viaId', globals.newBloc);
+                            globals.newBloc['owner']    = globals.userfile['user'];
+                            globals.newBloc['id']       = viaId;
+                            fa.set('blocs/$grade/$viaId', globals.newBloc);
 
-                          if(!globals.vias.containsKey(grade)) {
-                            globals.vias[grade] = {grade: globals.newBloc};
-                          } else {
-                            globals.vias[grade][viaId]  = globals.newBloc;
-                          }
+                            if(!globals.vias.containsKey(grade)) {
+                              globals.vias[grade] = {grade: globals.newBloc};
+                            } else {
+                              globals.vias[grade][viaId]  = globals.newBloc;
+                            }
 
-                          if(widget.edit) {
-                            ms.modify(globals.userfile['user'], globals.newBloc);
-                          } else {
-                            ms.create(globals.userfile['user'], globals.newBloc);
-                          }
+                            if(widget.edit) {
+                              ms.modify(globals.userfile['user'], globals.newBloc);
+                            } else {
+                              ms.create(globals.userfile['user'], globals.newBloc);
+                            }
 
-                          Navigator.push(context,MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()));
+                            Navigator.push(context,MaterialPageRoute(builder: (context) => sceneselect.SceneSelectHome()));
 
-                        },
-                        child: const Text('Gorde'),
-                      )
+                          },
+                          child: const Text('Gorde'),
+                        )
                     ]
                   )
                 )

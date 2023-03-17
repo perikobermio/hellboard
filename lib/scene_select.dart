@@ -99,7 +99,7 @@ class _SceneSelectHome extends State<SceneSelectHome> {
                     padding: EdgeInsets.zero,
                     onSelected: (item) {
                       if(item == 'edit') {
-                        globals.newBloc = via;
+                        globals.newBloc = Map.from(via);
                         Navigator.push(context, MaterialPageRoute(builder: (context) => sceneadd.SceneAdd(edit: true)));
                       } else if(item == 'show_user_vies') {
                         setState(() {
