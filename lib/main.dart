@@ -70,7 +70,9 @@ Future<void> preLoad() async {
 
   if(globals.panels.isEmpty) {
     loadPanels('panel40');
-    loadPanels('panel20');
+    loadPanels('panel30');
+    loadPanels('panel20a');
+    loadPanels('panel20b');
   }
 
   final userfile = globals.UserFile();

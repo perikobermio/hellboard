@@ -21,7 +21,9 @@ const List<Map<String, dynamic>> grades = [
 
 const List<Map<String, dynamic>> panels = [
   {'value': 'panel40',    'label': '40-ko panela'},
-  {'value': 'panel20',    'label': '20-ko panela'}
+  {'value': 'panel30',    'label': '30-ko panela'},
+  {'value': 'panel20a',   'label': '20A-ko panela'},
+  {'value': 'panel20b',   'label': '20B-ko panela'}
 ];
 
 const colors = {

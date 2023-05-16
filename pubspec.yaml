@@ -32,6 +32,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/img/panel20.jpg
+    - assets/img/panel20a.jpg
+    - assets/img/panel20b.jpg
+    - assets/img/panel30.jpg
     - assets/img/panel40.jpg
     - assets/img/logoh.png
